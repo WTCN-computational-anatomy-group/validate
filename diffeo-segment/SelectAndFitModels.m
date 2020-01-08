@@ -1,4 +1,4 @@
-function SelectModels(opt)
+function SelectAndFitModels(opt)
 % TODO
 % -------------------------------------------------------------------------
 % [ ]
@@ -77,7 +77,7 @@ if ~isfield(opt,'models'), opt.models = [0]; end
   
 [P,ix] = GetPopulations(dir_data,opt);
 
-for model_num=opt.models
+for model_num=opt.models % loop over models
         
     %%%%%%%%%%%%%%%%%%%
     % Get Model
