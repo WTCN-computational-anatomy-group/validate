@@ -1,0 +1,504 @@
+function SelectModels(opt)
+% TODO
+% -------------------------------------------------------------------------
+% [ ]
+%
+% -------------------------------------------------------------------------
+% QUESTIONS
+% -------------------------------------------------------------------------
+% [ ] Add tissue proportion? Less details in deformations?
+% [ ] Use binning uncertainity instead of jiter? Worth it? Slower right?
+% [ ] For register, use maffreg?
+% [ ] OK use of InitGMM?
+%
+% -------------------------------------------------------------------------
+% EXTRA
+% -------------------------------------------------------------------------
+% [ ] Investigate regularisation and iteration settings
+% [ ] Work on nii.gz? (see: https://uk.mathworks.com/matlabcentral/fileexchange/47698-savezip)
+% [ ] Make better 2D data, in all axes..
+%
+% -------------------------------------------------------------------------
+% VALIDATION
+% -------------------------------------------------------------------------
+% [ ] https://www.synapse.org/#!Synapse:syn3207203 
+% [ ] fmriproc
+%
+% -------------------------------------------------------------------------
+% POPULATIONS
+% -------------------------------------------------------------------------
+%     | Name         | Modality     | Labels                      | NumSubj | Ix
+% -------------------------------------------------------------------------
+% 1   | ATLAS        | T1           | 1.les                       | 142     | ix = 3
+% 2   | BALGRIST     | T1,PD        | 1.spn                       | 19      | ix = 3
+% 3   | CROMIS       | CT           | n/a                         | 686     | ix = 2
+% 4   | CROMISLABELS | CT           | 1.les,2.cal                 | 60      | ix = 2
+% 5   | DELIRIUM     | CT           | n/a                         | 1,025   | ix = 2
+% 6   | IXI          | T1,T2,PD,MRA | n/a                         | 567     | ix = 1
+% 7   | IXIRC        | GM,WM,CSF    | n/a                         | 32      | ix = n/a
+% 8   | IXIC         | GM,WM,CSF    | n/a                         | 32      | ix = n/a
+% 9   | MICCAI2012   | T1           | 1.gm,2.wm,3.ven             | 30      | ix = 3
+% 10  | MRBRAINS18   | T1,FLAIR,IR  | 1.gm,2.wm,3.csf,4.ven,5.cer | 7       | ix = 4
+%
+%__________________________________________________________________________
+% Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
+
+%%%%%%%%%%%%%%%%%%%
+% Parse input struct
+%------------------
+
+if nargin < 1, opt = struct; end
+
+% For setting paths and dirs
+if ~isfield(opt,'user'), opt.user = 'mbrud-home'; end 
+% Fit on 3D or 2D data?
+if ~isfield(opt,'run3d'), opt.run3d = false; end 
+% 2D plane ['ax','cor','sag']
+if ~isfield(opt,'ax2d'), opt.ax2d = 'ax'; end 
+% Number of subjects (for model 1-5)
+if ~isfield(opt,'numsubj'), opt.numsubj = 20; end           
+% Model 0 | Testing
+% Model 1 | Labels are used (K1=10), trying to get nice GM, WM and CSF
+% Model 2 | Labels are not used (K1=12), unsupervised for better normalisation
+% Model 3 | Labels are used (K1=7, mg_ix=2), trying to get nice GM, WM and CSF
+% Model 4 | Fit T1 (use to init) and CT (K1=12), unsupervised
+% Model 5 | Fit a learned model to new subjects
+if ~isfield(opt,'models'), opt.models = [0]; end        
+
+%%%%%%%%%%%%%%%%%%%
+% Set/get user specific
+%------------------
+
+[dir_data,dir_res] = UserSpecific(opt.user);
+
+%%%%%%%%%%%%%%%%%%%
+% Define populations
+%------------------
+  
+[P,ix] = GetPopulations(dir_data,opt);
+
+for model_num=MODELS
+        
+    %%%%%%%%%%%%%%%%%%%
+    % Get Model
+    %------------------
+
+    [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt);
+
+    if ~isempty(P1)
+        %%%%%%%%%%%%%%%%%%%
+        % Fit model
+        %------------------
+
+        if isempty(model)
+            % Groupwise registration
+            FitModel('groupwise',P1,sett); 
+        else
+            % Fit already learned model
+            FitModel('register',P1,model,sett); % 'model' is loaded in function GetModel()
+
+        %     % Evaluate model
+        %     res = GetGoodnessOfFit(sett.write.dir_res);
+        end
+
+        if 0
+           spm_check_registration(spm_select('FPList',sett.write.dir_res,'^(wimc).*\.nii$')); 
+        %    spm_check_registration(spm_select('FPList',sett.write.dir_res,'^(wc|wimc).*\.nii$')); 
+        %    spm_check_registration(spm_select('FPList',sett.write.dir_res,'^(im[1,2,3]).*\.nii$')); 
+        end
+    end
+end
+end
+%==========================================================================
+
+%==========================================================================
+function FindBestModel
+% Find model with best fit
+
+dir_exp     = 'experiment';
+experiments = 0:6;
+
+mx_mce = -Inf;
+mx_mds = -Inf;
+
+for e=experiments
+    d = fullfile(dir_exp,num2str(e));
+    f = spm_select('FPList',d,'^res.*\.mat$');
+    
+    fi = deblank(f(e + 1,:));
+    load(fi);
+        
+%     mce = median(res.ce);
+%     mds = median(res.ds);
+%     mds
+%     if mds > mx_mds
+%         mx_mds = mds;
+%         emx    = e;
+%     end
+    
+    for i=1:size(f,1)
+        fi = deblank(f(i,:));
+        load(fi);
+        
+        mce = median(res.ce);
+        mds = median(res.ds);
+        
+        if mds > mx_mds
+            mx_mds = mds;
+            emx    = e;
+            imx    = i;
+            tmp = sort(res.ds);
+        end
+    end
+end
+end
+%==========================================================================
+
+%==========================================================================
+function res = GetGoodnessOfFit(dir_lab)
+% Evaluate model fit
+
+% Get normalised labels
+f   = spm_select('FPList',dir_lab);
+Nii = nifti(f);
+N   = numel(Nii);
+
+% Compute dice score
+cl  = zeros(1,0.5*N*(N - 1));
+res = struct('ce',cl,'ds',cl);
+cnt = 1;
+for i1=1:N
+    im1 = Nii(i1).dat(:);
+    for i2=i1+1:numel(Nii)
+        im2 = Nii(i2).dat(:);
+                
+        % Compute average cross entropy
+        ce = -sum(im1.*log(im2 + eps)) - sum(im2.*log(im1 + eps));
+        
+        % Compute dice score
+        ds = dice(im1,im2);
+        
+        res.ce(cnt) = ce;
+        res.ds(cnt) = ds;        
+        cnt         = cnt + 1;
+    end
+end
+
+if false
+    figure(666)
+    subplot(121)
+    boxplot(res.ce)
+    grid on
+    axis tight
+    title('CE')
+    subplot(122)
+    boxplot(res.ds)
+    grid on
+    axis tight
+    title('DS')
+end
+end
+%==========================================================================
+
+%==========================================================================
+function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
+% Gey models
+
+num = opt.numsubj;
+run_3D  = opt.run3d;
+ax_2D   = opt.ax2d;
+
+model = [];
+P1    = {};
+sett  = struct;
+
+if model_num == 0, fprintf('=============\nMODEL 0\n=============\n\n');
+%%%%%%%%%%%%%%%%%%%
+% Model 0 | Testing
+%------------------
+
+% Define training population
+ix_pop = ix.IXI;
+N      = 8; % Set maximum number of subjects
+P1     = P(ix_pop);
+for p=1:numel(P1)
+    P1{p}{3} = N;
+    P1{p}{4} = 1;
+end
+
+% ix_pop = [ix.BALGRIST ix.IXI ix.MICCAI2012 ix.MRBRAINS18]; % Set training populations to use
+% N      = 2; % Set maximum number of subjects
+% 
+% % Define training population
+% P1 = P(ix_pop);
+% for p=1:numel(P1)
+%     P1{p}{2} = {'T1'};
+%     P1{p}{3} = N;
+%     P1{p}{4} = 1;
+% end
+
+% ix_pop = ix.IXIRC;
+% N      = 4; % Set maximum number of subjects
+% 
+% % Define training population
+% P1       = P(ix_pop);
+% P1{1}{3} = N;
+
+% Settings
+sett                    = struct;
+sett.show.figs          = {'model','segmentations','normalised','intensity'};
+sett.write.dir_res      = fullfile(dir_res,'results/model-0');
+if ~run_3D, sett.write.dir_res = [sett.write.dir_res '-2D-' ax_2D]; end
+sett.model.mg_ix        = [1 1 1 1 2 3 4 5 6];
+sett.labels.use         = true; 
+sett.model.K            = 6;  
+sett.show.mx_subjects   = 8;
+sett.write.mu           = [true true];
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+end
+
+if model_num == 1 || model_num == 2
+%%%%%%%%%%%%%%%%%%%
+% Model 1 and 2
+%------------------
+
+% Set training populations to use
+ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM ix.MICCAI2012 ix.ATLAS];
+N      = [80 4 12 80 20 80]; % Set maximum number of subjects
+N      = min(N,NumSubj);
+int_ix = [1 3 2 4 3 3];
+
+% Label information
+igm = 8; iwm = 6; icsf = 9; iven = 9; k1 = 10; % OBS: change csf 10 -> 9 for 3D
+cm_map = {{}, {igm,iwm,icsf,iven,[igm iwm],setdiff(1:k1,[iven])}, {iwm,[]}, {}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}};
+
+% Define training population
+P1 = P(ixs);
+for p=1:numel(P1)
+    P1{p}{3} = N(p);
+    P1{p}{4} = int_ix(p);
+    P1{p}{5} = cm_map{p};
+end
+P1{2}{2} = {'T1'};
+
+% Settings
+sett                    = struct;
+sett.show.figs          = {'model','segmentations','intensity'};
+sett.model.init_mu_dm   = 32;
+sett.write.intermediate = true;
+sett.write.clean_vel    = false;
+sett.write.mu           = [true true];
+sett.nit.init           = 6;
+sett.show.mx_subjects   = 4;
+end
+
+if model_num == 2, fprintf('=============\nMODEL 1\n=============\n\n');
+%%%%%%%%%%%%%%%%%%%
+% Model 1 | Labels are used (K1=10), trying to get nice GM, WM and CSF
+%------------------
+
+% Settings
+sett.write.dir_res = fullfile(dir_res,'results/model-1');
+if ~run_3D, sett.write.dir_res = [sett.write.dir_res '-2D-' ax_2D]; end
+sett.labels.use    = true; 
+sett.model.K       = 9;  
+sett.model.mg_ix   = [1 1 2 2 3 4 5 6 7 8 9 10];
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+end
+
+if model_num == 3, fprintf('=============\nMODEL 2\n=============\n\n');
+%%%%%%%%%%%%%%%%%%%
+% Model 2 | Labels are not used (K1=12), unsupervised for better normalisation
+%------------------
+
+% Settings
+sett.write.dir_res = fullfile(dir_res,'results/model-2');
+if ~run_3D, sett.write.dir_res = [sett.write.dir_res '-2D-' ax_2D]; end
+sett.labels.use    = false; 
+sett.model.K       = 11;  
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+end
+
+if model_num == 4, fprintf('=============\nMODEL 3\n=============\n\n');
+%%%%%%%%%%%%%%%%%%%
+% Model 3 | Labels are used (K1=7, mg_ix=2), trying to get nice GM, WM and CSF
+%------------------
+
+% Set training populations to use
+ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM ix.MICCAI2012 ix.ATLAS];
+N      = [80 4 12 80 20 80]; % Set maximum number of subjects
+N      = min(N,NumSubj);
+int_ix = [1 5 2 4 3 3];
+
+% Label information
+igm = 6; iwm = 5; icsf = 3; iven = 3; k1 = 8;
+cm_map = {{}, {igm,iwm,icsf,iven,[igm iwm],setdiff(1:k1,[iven])}, {iwm,[]}, {}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}};
+
+% Define training population
+P1 = P(ixs);
+for p=1:numel(P1)
+    P1{p}{3} = N(p);
+    P1{p}{4} = int_ix(p);
+    P1{p}{5} = cm_map{p};
+end
+
+% Settings
+sett                    = struct;
+sett.show.figs          = {'model','segmentations','intensity'};
+sett.model.init_mu_dm   = 16;  
+sett.write.intermediate = true;
+sett.write.clean_vel    = false;
+sett.write.dir_res      = fullfile(dir_res,'results/model-3');
+if ~run_3D, sett.write.dir_res = [sett.write.dir_res '-2D-' ax_2D]; end
+sett.labels.use         = true; 
+sett.model.K            = 7;  
+sett.model.mg_ix        = 2;
+sett.model.ix_init_pop  = 5;
+sett.write.mu           = [true true];
+sett.nit.init           = 6;
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
+end
+
+if model_num == 5, fprintf('=============\nMODEL 4\n=============\n\n');
+%%%%%%%%%%%%%%%%%%%
+% Model 4 | Fit only T1 (use to InitGMM, K1=12), unsupervised
+%------------------
+
+% Set training populations to use
+ixs    = [ix.MRBRAINS18  ix.IXI ix.BALGRIST ix.MICCAI2012];
+N      = [4 80 12 80 20]; % Set maximum number of subjects
+N      = min(N,NumSubj);
+int_ix = [1 1 1 1];
+cm_map = {{},{},{},{}};
+
+% Define training population
+P1 = P(ixs);
+for p=1:numel(P1)    
+    P1{p}{2} = {'T1'};
+    P1{p}{3} = N(p);
+    P1{p}{4} = int_ix(p);
+    P1{p}{5} = cm_map{p};
+end
+
+% Settings
+sett                    = struct;
+sett.show.figs          = {'model','segmentations','intensity'};
+sett.model.init_mu_dm   = 16;  
+sett.write.intermediate = true;
+sett.write.clean_vel    = false;
+sett.write.dir_res      = fullfile(dir_res,'results/model-4');
+if ~run_3D, sett.write.dir_res = [sett.write.dir_res '-2D-' ax_2D]; end
+sett.labels.use         = false; 
+sett.model.K            = 11;  
+sett.model.mg_ix        = 1;
+sett.model.ix_init_pop  = 1;
+sett.write.mu           = [true true];
+sett.nit.init           = 6;
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+end
+
+if model_num == 6, fprintf('=============\nMODEL 5\n=============\n\n');
+%%%%%%%%%%%%%%%%%%%
+% Model 5 | Fit a learned model to new subjects
+%------------------
+
+% Define training population
+ix_pop   = ix.MICCAI2012; % Set training populations to use
+P1       = P(ix_pop);
+P1{1}{2} = {'T1'};
+P1{1}{3} = {21:30};
+P1{1}{4} = 3;
+
+% Settings
+sett                   = struct;
+sett.show.figs         = {'model','segmentations','normalised','parameters','intensity'};
+sett.write.dir_res     = fullfile(dir_res,'results/model-5');
+if ~run_3D, sett.write.dir_res = [sett.write.dir_res '-2D-' ax_2D]; end
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+sett.write.tc          = false(1,3);
+sett.write.im          = false(1,4);
+sett.write.df          = [true true];
+sett.write.labels      = [true false];
+sett.do.infer          = true;
+sett.model.init_mu_dm  = 16;  
+sett.var.v_settings    = [1e-4 0 0.2 0.05 0.2]*2^3;
+sett.show.mx_subjects  = 4;
+sett.clean_z.mrf       = 2;
+sett.clean_z.gwc_tix   = struct('gm',[8 10],'wm',[7],'csf',[11]);
+
+% Path to a model
+% model_num = 1;
+% pth_model = fullfile(dir_res,['results/model-' num2str(model_num)]);
+% if ~run_3D, pth_model = [pth_model '-2D-' ax_2D]; end
+% pth_model = fullfile(pth_model,'model_spm_mb.mat');
+pth_model = '/scratch/Results/diffeo-segment/k11/model_spm_mb.mat';
+
+% Load model
+load(pth_model) % loads variable 'model'
+% model = rmfield(model,'shape');  % uncommented -> no mu
+% model = rmfield(model,'appear'); % uncommented -> no pr
+end
+end
+%==========================================================================
+
+%==========================================================================
+function [P,ix] = GetPopulations(dir_data,opt)
+% Get available populations
+%
+% P{i} = {'NAME',{MOD1,..,MODC},NumSubj,PopIx,cm_map,CT,DoBF}
+
+ax_2D  = opt.ax_2D;
+run_3D = opt.run_3D;
+
+if run_3D
+    % 3D data will be used
+    d_2D = '';
+else
+    % Fit on 2D data, anatomical plane decided by AX2D variable
+    fprintf('=============\nOBS! USING 2D DATA!\n=============\n\n');    
+    d_2D = fullfile('2D',ax_2D);
+end
+
+ix = struct('ATLAS',1,'BALGRIST',2,'CROMIS',3,'CROMISLABELS',4,'DELIRIUM',5, ...
+            'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10);
+P  = cell(1,numel(ix));
+
+% Populations of images (GMM will be fitted)
+P{ix.ATLAS}        = {fullfile(dir_data,d_2D,'ATLAS'),       {'T1'}, Inf, [], {}, false};
+P{ix.BALGRIST}     = {fullfile(dir_data,d_2D,'BALGRIST'),    {'T1','PD'}, Inf, [], {}, false};
+P{ix.CROMIS}       = {fullfile(dir_data,d_2D,'CROMIS'),      {'CT'}, Inf, [], {}, true};
+P{ix.CROMISLABELS} = {fullfile(dir_data,d_2D,'CROMISLABELS'),{'CT'}, Inf, [], {}, true};
+P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),    {'CT'}, Inf, [], {}, true};
+P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),         {'T1','T2','PD'}, Inf, [], {}, false};
+P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),  {'T1'}, Inf, [], {}, false};
+P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),  {'T1','FLAIR'}, Inf, [], {}, false};
+
+% Populations of tissue segmentations (2D not available)
+P{ix.IXIC}  = {fullfile(dir_data,'IXIC'),  {'GM','WM','CSF'}, Inf, [], {}, false};
+P{ix.IXIRC} = {fullfile(dir_data,'IXIRC'), {'GM','WM'}, Inf, [], {}, false};    
+end
+%==========================================================================
+
+%==========================================================================
+function [dir_data,dir_res] = UserSpecific(user)
+% Sets MATLAB path to diffeo-segment and auxiliary-functions, and return
+% path to data directory and where to write output results
+%
+% Available users
+% . mbrud-home
+% . mbrud-fil
+if strcmp(user,'mbrud-home')    
+    addpath('/home/smajjk/dev/diffeo-segment')
+    addpath('/home/smajjk/dev/auxiliary-functions')
+    dir_data = '/home/smajjk/Data/Nii/diffeo-segment/TrainingData2D';
+    dir_res  = '/home/smajjk/Data/Results/diffeo-segment';
+elseif strcmp(user,'mbrud-fil')    
+    addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')
+    addpath('/home/mbrud/dev/mbrud/code/matlab/auxiliary-functions')
+    dir_data = '/scratch/Nii/TrainingData/diffeo-segment-new/';
+    dir_res  = '/scratch/Results/diffeo-segment';
+else
+    error('Undefined user!');
+end
+end
+%==========================================================================
