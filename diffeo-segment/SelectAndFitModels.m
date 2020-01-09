@@ -27,18 +27,18 @@ function SelectAndFitModels(opt)
 % -------------------------------------------------------------------------
 % POPULATIONS
 % -------------------------------------------------------------------------
-%     | Name         | Modality     | Labels                      | NumSubj | Ix
+%     | Name         | Modality     | Labels                             | NumSubj | Ix
 % -------------------------------------------------------------------------
-% 1   | ATLAS        | T1           | 1.les                       | 142     | ix = 3
-% 2   | BALGRIST     | T1,PD        | 1.spn                       | 19      | ix = 3
-% 3   | CROMIS       | CT           | n/a                         | 686     | ix = 2
-% 4   | CROMISLABELS | CT           | 1.les,2.cal                 | 60      | ix = 2
-% 5   | DELIRIUM     | CT           | n/a                         | 1,025   | ix = 2
-% 6   | IXI          | T1,T2,PD,MRA | n/a                         | 567     | ix = 1
-% 7   | IXIRC        | GM,WM,CSF    | n/a                         | 32      | ix = n/a
-% 8   | IXIC         | GM,WM,CSF    | n/a                         | 32      | ix = n/a
-% 9   | MICCAI2012   | T1           | 1.gm,2.wm,3.ven             | 30      | ix = 3
-% 10  | MRBRAINS18   | T1,FLAIR,IR  | 1.gm,2.wm,3.csf,4.ven,5.cer | 7       | ix = 4
+% 1   | ATLAS        | T1           | 1.les                              | 142     | ix = 3
+% 2   | BALGRIST     | T1,PD        | 1.spn                              | 19      | ix = 3
+% 3   | CROMIS       | CT           | n/a                                | 686     | ix = 2
+% 4   | CROMISLABELS | CT           | 1.les,2.cal                        | 60      | ix = 2
+% 5   | DELIRIUM     | CT           | n/a                                | 1,025   | ix = 2
+% 6   | IXI          | T1,T2,PD,MRA | n/a                                | 567     | ix = 1
+% 7   | IXIRC        | GM,WM,CSF    | n/a                                | 32      | ix = n/a
+% 8   | IXIC         | GM,WM,CSF    | n/a                                | 32      | ix = n/a
+% 9   | MICCAI2012   | T1           | 1.gm,2.wm,3.ven                    | 30      | ix = 3
+% 10  | MRBRAINS18   | T1,FLAIR,IR  | 1.cgm,2.sgm,3.wm,4.csf,5.ven,6.cer | 7       | ix = 4
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -55,7 +55,7 @@ if ~isfield(opt,'user'), opt.user = 'mbrud-home'; end
 if ~isfield(opt,'run3d'), opt.run3d = false; end 
 % 2D plane ['ax','cor','sag']
 if ~isfield(opt,'ax2d'), opt.ax2d = 'ax'; end 
-% Number of subjects (for model 1-5)
+% Number of subjects
 if ~isfield(opt,'numsubj'), opt.numsubj = 20; end           
 % Model 0 | Testing
 % Model 1 | Labels are used (K1=10), trying to get nice GM, WM and CSF
@@ -63,7 +63,7 @@ if ~isfield(opt,'numsubj'), opt.numsubj = 20; end
 % Model 3 | Labels are used (K1=7, mg_ix=2), trying to get nice GM, WM and CSF
 % Model 4 | Fit T1 (use to init) and CT (K1=12), unsupervised
 % Model 5 | Fit a learned model to new subjects
-if ~isfield(opt,'models'), opt.models = [0]; end        
+if ~isfield(opt,'models'), opt.models = 0; end        
 
 %%%%%%%%%%%%%%%%%%%
 % Set/get user specific
@@ -165,7 +165,7 @@ if strcmp(user,'mbrud-home')
 elseif strcmp(user,'mbrud-fil')    
     addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')
     addpath('/home/mbrud/dev/mbrud/code/matlab/auxiliary-functions')
-    dir_data = '/scratch/Nii/TrainingData/diffeo-segment-new/';
+    dir_data = '/scratch/Nii/TrainingData/diffeo-segment/';
     dir_res  = '/scratch/Results/diffeo-segment';
 else
     error('Undefined user!');

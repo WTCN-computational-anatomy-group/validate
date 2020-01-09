@@ -52,7 +52,7 @@ end
 % dat2in()
 function in = dat2in(dat)
 Npop = numel(dat);
-s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[]);
+s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[],'pop_id',[]);
 for p=1:Npop % loop over populations
     pths_im = dat(p).pths_im;
     N       = size(pths_im{1},1);
@@ -71,6 +71,7 @@ for p=1:Npop % loop over populations
         if p == 1 && n == 1
             in        = s;
             in.F      = im;
+            in.pop_id = dat(p).pop_id;
             in.do_bf  = dat(p).do_bf;
             in.ix_pop = dat(p).ix_pop;
             in.is_ct  = dat(p).is_ct;
@@ -78,6 +79,7 @@ for p=1:Npop % loop over populations
         else
             ins        = s;
             ins.F      = im;
+            ins.pop_id = dat(p).pop_id;
             ins.do_bf  = dat(p).do_bf;
             ins.ix_pop = dat(p).ix_pop;
             ins.is_ct  = dat(p).is_ct;
@@ -95,12 +97,13 @@ function [dat,sett] = pop2dat(P,sett)
 
 Npop = numel(P);
 cl   = cell(Npop,1);
-dat  = struct('pths_im',cl,'pths_lab',cl,'do_bf',cl,'ix_pop',cl,'is_ct',cl,'cm_map',cl);
+dat  = struct('pths_im',cl,'pths_lab',cl,'do_bf',cl,'ix_pop',cl,'is_ct',cl,'cm_map',cl,'pop_id',cl);
 for p=1:Npop % loop over populations
     
     % Defaults
     ix_pop = []; is_ct = false; do_bf = true; cm_map = []; Nsubj = Inf;
     
+    pop_id                      = p;
     dir_data                    = P{p}{1};
     modality                    = P{p}{2};    
     if numel(P{p}) >= 3, Nsubj  = P{p}{3}; end
@@ -111,6 +114,7 @@ for p=1:Npop % loop over populations
     
     if isempty(P{p}{4}), ix_pop = p; end
     
+    dat(p).pop_id = pop_id;
     dat(p).ix_pop = ix_pop;    
     dat(p).cm_map = cm_map;    
     dat(p).is_ct  = is_ct;    

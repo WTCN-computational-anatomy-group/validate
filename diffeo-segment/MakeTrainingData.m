@@ -18,10 +18,10 @@ addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
 % Global settings
 %-------------------------------------
 
-S0         = 32;
-NumWorkers = 8;
+S0         = 1;
+NumWorkers = 0;
 DirData0   = '/scratch/Nii/Original';
-DirOut     = '/scratch/Nii/TrainingData2D/';
+DirOut     = '/scratch/Nii/Temp/';
 
 if ~(exist(DirOut,'dir') == 7), mkdir(DirOut); end
 
@@ -29,12 +29,12 @@ Do = false;
 Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
             'DELIRIUM',Do,'IXI',Do,'MICCAI2012',Do,'MRBRAINS18',Do,'RIRE',Do);   
         
-Do.ATLAS = true;
-Do.BALGRIST = true;
-Do.DELIRIUM = true;
-Do.IXI = true;
+Do.ATLAS      = false;
+Do.BALGRIST   = false;
+Do.DELIRIUM   = false;
+Do.IXI        = false;
 Do.MICCAI2012 = true;
-Do.MRBRAINS18 = true;
+Do.MRBRAINS18 = false;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ATLAS
@@ -358,7 +358,7 @@ if Do.(Population)
     opt.do.coreg        = true;
     opt.do.reslice      = true;
     opt.reslice.ref     = 3;
-    opt.labels.part     = {[1,2],[3,4,8],5,6,7};
+    opt.labels.part     = {1,2,[3,4,8],5,6,7};
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
     opt.do.go2native    = false;  
