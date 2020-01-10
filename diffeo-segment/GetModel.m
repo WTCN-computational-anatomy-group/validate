@@ -16,30 +16,31 @@ if model_num == 0, fprintf('=============\nMODEL 0\n=============\n\n');
 
 % Define training population
 ix_pop  = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.MICCAI2012 ix.DELIRIUM];
-int_pop = [1 2 3 4 5];
+int_pop = [1 2 3 2 4];
 P1      = P(ix_pop);
 
 % Label information
-if run3d, igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
-else,     igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
+if run3d, igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
+else,     igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
 end
 cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}};
 
 for p=1:numel(P1)
-    P1{p}{3} = numsubj;
+    P1{p}{3} = numsubj(min(numel(numsubj),p));
     P1{p}{4} = int_pop(p);  
     P1{p}{5} = cm_map{p};
 end
+P1{2}{2} = {'T1'};
 
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations'};
 sett.write.dir_res      = fullfile(dir_res,'results/model-0');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.model.mg_ix        = [1 1 1 1 2 3 4 5 6 7 8 9 10];
-sett.labels.use         = false; 
-sett.model.K            = 9;  
-% sett.show.mx_subjects   = 4;
+% sett.model.mg_ix        = 2;
+sett.labels.use         = true; 
+sett.model.K            = 11;  
+sett.show.mx_subjects   = 8;
 sett.model.init_mu_dm   = 16;
 sett.write.mu           = [true true];
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
@@ -51,16 +52,16 @@ if model_num == 1 || model_num == 2
 %------------------
 
 % Set training populations to use
-ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM ix.MICCAI2012 ix.ATLAS];
-N      = [80 4 12 80 20 80]; % Set maximum number of subjects
+ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM ix.MICCAI2012];
+N      = [80 4 12 80 20]; % Set maximum number of subjects
 N      = min(N,numsubj);
-int_ix = [1 3 2 4 3 3];
+int_ix = [1 3 2 4 3];
 
 % Label information
 if run3d, igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
 else,     igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
 end
-cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}};
+cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {}, {igm,iwm,iven,setdiff(1:k1,[iven])}};
 
 % Define training population
 P1 = P(ixs);
