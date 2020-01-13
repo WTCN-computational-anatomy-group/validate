@@ -180,7 +180,11 @@ elseif strcmp(user,'yael-fil')
     addpath('~/Devel/computational-anatomy/diffeo-segment-pca/');
     dir_data = '/scratch/new_segment/TrainingData';
     dir_res  = '/export/data/experiments/new_segment/2020/';
-
+elseif strcmp(user,'yael-fil-master')    
+    addpath('~/Devel/balbasty/auxiliary-functions/');
+    addpath('~/Devel/computational-anatomy/diffeo-segment/');
+    dir_data = '/scratch/new_segment/TrainingData';
+    dir_res  = '/export/data/experiments/new_segment/200110/';
 else
     error('Undefined user!');
 end
