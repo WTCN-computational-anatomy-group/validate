@@ -35,7 +35,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+sett.show.figs          = {'model','segmentations','InitGMM'};
 sett.write.dir_res      = fullfile(dir_res,'results/model-0');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.model.mg_ix        = 2;
@@ -75,7 +75,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+sett.show.figs          = {'model','segmentations','InitGMM'};
 sett.model.init_mu_dm   = 16;
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
