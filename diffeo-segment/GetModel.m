@@ -15,33 +15,34 @@ if model_num == 0, fprintf('=============\nMODEL 0\n=============\n\n');
 %------------------
 
 % Define training population
-ix_pop  = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.MICCAI2012 ix.DELIRIUM];
-int_pop = [1 2 3 2 4];
-P1      = P(ix_pop);
+ix_pop = [ix.MICCAI2012 ix.IXI ix.ATLAS ix.MRBRAINS18 ix.DELIRIUM];
+
 
 % Label information
 if run3d, igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
 else,     igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
 end
-cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}};
+cm_map = {{icgm,isgm,iwm,1:k1,1:k1,[isgm iwm],1:k1}, {iwm,[]}, {igm,iwm,1:k1,1:k1}, {}, {}};
 
+P1 = P(ix_pop);
 for p=1:numel(P1)
-    P1{p}{3} = numsubj(min(numel(numsubj),p));
-    P1{p}{4} = int_pop(p);  
+    P1{p}{3} = numsubj(min(numel(numsubj),p));    
+    P1{p}{4} = p;      
     P1{p}{5} = cm_map{p};
 end
-P1{2}{2} = {'T1'};
+P1{1}{2} = {'T1'};
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+sett.show.figs          = {'model','segmentations','intensity'};
 sett.write.dir_res      = fullfile(dir_res,'results/model-0');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-% sett.model.mg_ix        = 2;
-sett.labels.use         = true; 
+sett.model.mg_ix        = 1;
+sett.labels.use         = false; 
 sett.model.K            = 11;  
 sett.show.mx_subjects   = 8;
-sett.model.init_mu_dm   = 16;
+sett.model.init_mu_dm   = 8;
+sett.nit.init           = 6;
 sett.write.mu           = [true true];
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
@@ -52,16 +53,16 @@ if model_num == 1 || model_num == 2
 %------------------
 
 % Set training populations to use
-ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM ix.MICCAI2012];
-N      = [80 4 12 80 20]; % Set maximum number of subjects
+ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.MICCAI2012 ix.ATLAS ix.DELIRIUM];
+N      = [80 4 12 20 80 80]; % Set maximum number of subjects
 N      = min(N,numsubj);
-int_ix = [1 3 2 4 3];
+int_ix = [1 2 3 4 5 6];
 
 % Label information
 if run3d, igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
 else,     igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
 end
-cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {}, {igm,iwm,iven,setdiff(1:k1,[iven])}};
+cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}, {}};
 
 % Define training population
 P1 = P(ixs);
@@ -70,17 +71,16 @@ for p=1:numel(P1)
     P1{p}{4} = int_ix(p);
     P1{p}{5} = cm_map{p};
 end
-P1{2}{2} = {'T1'};
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity'};
-sett.model.init_mu_dm   = 16;
+sett.show.figs          = {'model','segmentations'};
+sett.model.init_mu_dm   = 8;
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
 sett.write.mu           = [true true];
 sett.nit.init           = 6;
-sett.show.mx_subjects   = 4;
+sett.show.mx_subjects   = 2;
 end
 
 if model_num == 1, fprintf('=============\nMODEL 1\n=============\n\n');
@@ -115,29 +115,29 @@ if model_num == 3, fprintf('=============\nMODEL 3\n=============\n\n');
 % Model 3 | Labels are used (K1=7, mg_ix=2), trying to get nice GM, WM and CSF
 %------------------
 
-% Set training populations to use
-ixs    = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM ix.MICCAI2012 ix.ATLAS];
-N      = [80 4 12 80 20 80]; % Set maximum number of subjects
-N      = min(N,numsubj);
-int_ix = [1 5 2 4 3 3];
+% Define training population
+ix_pop  = [ix.IXI ix.MRBRAINS18 ix.BALGRIST ix.MICCAI2012 ix.DELIRIUM];
+N       = [80 4 12 20 80]; % Set maximum number of subjects
+N       = min(N,numsubj); 
+int_pop = [1 2 3 2 4];
 
 % Label information
-if run3d, igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
-else,     igm = 1; icgm = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
+if run3d, igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
+else,     igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
 end
-cm_map = {{}, {icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {}, {igm,iwm,iven,setdiff(1:k1,[iven])}, {}};
+cm_map = {{}, {icgm,isgm,iwm,1:k1,1:k1,[isgm iwm],1:k1}, {iwm,[]}, {igm,iwm,1:k1,1:k1}, {}};
 
-% Define training population
-P1 = P(ixs);
+P1      = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p);
-    P1{p}{4} = int_ix(p);
+    P1{p}{4} = int_pop(p);  
     P1{p}{5} = cm_map{p};
 end
+P1{2}{2} = {'T1'};
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity'};
+sett.show.figs          = {'model','segmentations'};
 sett.model.init_mu_dm   = 16;  
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
@@ -146,7 +146,6 @@ if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.labels.use         = true; 
 sett.model.K            = 7;  
 sett.model.mg_ix        = 2;
-sett.model.ix_init_pop  = 5;
 sett.write.mu           = [true true];
 sett.nit.init           = 6;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
@@ -216,8 +215,10 @@ sett.do.infer          = true;
 sett.model.init_mu_dm  = 16;  
 sett.var.v_settings    = [1e-4 0 0.2 0.05 0.2]*2^2;
 sett.show.mx_subjects  = 4;
-sett.clean_z.mrf       = 2;
-sett.clean_z.gwc_tix   = struct('gm',[8 10],'wm',[7],'csf',[11]);
+% sett.clean_z.mrf       = 2;
+% sett.clean_z.gwc_tix   = struct('gm',[8 10],'wm',[7],'csf',[11]);
+sett.write.vel         = true;
+sett.write.affine      = true;
 
 % Path to a model
 % model_num = 1;
