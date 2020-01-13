@@ -15,32 +15,33 @@ if model_num == 0, fprintf('=============\nMODEL 0\n=============\n\n');
 %------------------
 
 % Define training population
-ix_pop = [ix.MICCAI2012 ix.IXI ix.ATLAS ix.MRBRAINS18 ix.DELIRIUM];
-
+ix_pop = [ix.MICCAI2012 ix.IXI ix.ATLAS ix.MRBRAINS18 ix.BALGRIST ix.DELIRIUM];
+N      = [20 80 80 4 12 80];
+N      = min(N,numsubj);
 
 % Label information
 if run3d, igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
 else,     igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 8;
 end
-cm_map = {{icgm,isgm,iwm,1:k1,1:k1,[isgm iwm],1:k1}, {iwm,[]}, {igm,iwm,1:k1,1:k1}, {}, {}};
+cm_map = {{}, {}, {}, {}, {}, {}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
-    P1{p}{3} = numsubj(min(numel(numsubj),p));    
+%     P1{p}{3} = numsubj(min(numel(numsubj),p));    
+    P1{p}{3} = N(p); 
     P1{p}{4} = p;      
     P1{p}{5} = cm_map{p};
 end
-P1{1}{2} = {'T1'};
 
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations','intensity'};
 sett.write.dir_res      = fullfile(dir_res,'results/model-0');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.model.mg_ix        = 1;
+sett.model.mg_ix        = 2;
 sett.labels.use         = false; 
-sett.model.K            = 11;  
-sett.show.mx_subjects   = 8;
+sett.model.K            = 7;  
+sett.show.mx_subjects   = 2;
 sett.model.init_mu_dm   = 8;
 sett.nit.init           = 6;
 sett.write.mu           = [true true];
