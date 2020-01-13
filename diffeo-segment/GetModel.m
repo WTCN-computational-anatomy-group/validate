@@ -42,7 +42,7 @@ sett.model.mg_ix        = 2;
 sett.labels.use         = false; 
 sett.model.K            = 7;  
 sett.show.mx_subjects   = 2;
-sett.model.init_mu_dm   = 8;
+sett.model.init_mu_dm   = 16;
 sett.nit.init           = 6;
 sett.write.mu           = [true true];
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
@@ -76,7 +76,7 @@ end
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations'};
-sett.model.init_mu_dm   = 8;
+sett.model.init_mu_dm   = 16;
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
 sett.write.mu           = [true true];
