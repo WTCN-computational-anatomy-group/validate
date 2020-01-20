@@ -1,7 +1,13 @@
 function SelectAndFitModels(opt)
 % TODO
 % -------------------------------------------------------------------------
-% [ ]
+% [ ] Tidy up code after inclusion of InitGMM
+% [ ] Make useable for single subject again
+% [ ] Labels and InitGMM (mu..)
+% [ ] Introduce mg later
+% [ ] NaNs or template in resps that have no obs?
+% [ ] InitGMM and CT data
+% [ ] vel reg increase
 %
 % -------------------------------------------------------------------------
 % QUESTIONS
@@ -27,18 +33,19 @@ function SelectAndFitModels(opt)
 % -------------------------------------------------------------------------
 % POPULATIONS
 % -------------------------------------------------------------------------
-%     | Name         | Modality     | Labels                             | NumSubj | Ix
+%     | Name         | Modality     | Labels                             | NumSubj 
 % -------------------------------------------------------------------------
-% 1   | ATLAS        | T1           | 1.les                              | 142     | ix = 3
-% 2   | BALGRIST     | T1,PD        | 1.spn                              | 19      | ix = 3
-% 3   | CROMIS       | CT           | n/a                                | 686     | ix = 2
-% 4   | CROMISLABELS | CT           | 1.les,2.cal                        | 60      | ix = 2
-% 5   | DELIRIUM     | CT           | n/a                                | 1,025   | ix = 2
-% 6   | IXI          | T1,T2,PD,MRA | n/a                                | 567     | ix = 1
-% 7   | IXIRC        | GM,WM,CSF    | n/a                                | 32      | ix = n/a
-% 8   | IXIC         | GM,WM,CSF    | n/a                                | 32      | ix = n/a
-% 9   | MICCAI2012   | T1           | 1.gm,2.wm,3.ven                    | 30      | ix = 3
-% 10  | MRBRAINS18   | T1,FLAIR,IR  | 1.cgm,2.sgm,3.wm,4.csf,5.ven,6.cer | 7       | ix = 4
+% 1   | ATLAS        | T1           | 1.les                              | 142     
+% 2   | BALGRIST     | T1,PD        | 1.spn                              | 19      
+% 3   | CROMIS       | CT           | n/a                                | 686     
+% 4   | CROMISLABELS | CT           | 1.les,2.cal                        | 60      
+% 5   | DELIRIUM     | CT           | n/a                                | 1,025   
+% 6   | IXI          | T1,T2,PD,MRA | n/a                                | 567     
+% 7   | IXIRC        | GM,WM,CSF    | n/a                                | 32      
+% 8   | IXIC         | GM,WM,CSF    | n/a                                | 32      
+% 9   | MICCAI2012   | T1           | 1.gm,2.wm,3.ven                    | 35     
+% 10  | MRBRAINS18   | T1,FLAIR,IR  | 1.cgm,2.sgm,3.wm,4.csf,5.ven,6.cer | 7       
+% 11  | ROB          | CT           | n/a                                | 72      
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -130,7 +137,7 @@ else
 end
 
 ix = struct('ATLAS',1,'BALGRIST',2,'CROMIS',3,'CROMISLABELS',4,'DELIRIUM',5, ...
-            'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10);
+            'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10,'ROB',11);
 P  = cell(1,numel(ix));
 
 % Populations of images (GMM will be fitted)
@@ -142,6 +149,7 @@ P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),    {'CT'}, Inf, [], {}
 P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),         {'T1','T2','PD'}, Inf, [], {}, false};
 P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),  {'T1'}, Inf, [], {}, false};
 P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),  {'T1','FLAIR'}, Inf, [], {}, false};
+P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),         {'CT'}, Inf, [], {}, true};
 
 % Populations of tissue segmentations (2D not available)
 P{ix.IXIC}  = {fullfile(dir_data,'IXIC'),  {'GM','WM','CSF'}, Inf, [], {}, false};

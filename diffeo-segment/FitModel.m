@@ -107,7 +107,7 @@ for p=1:Npop % loop over populations
     dir_data                    = P{p}{1};
     modality                    = P{p}{2};    
     if numel(P{p}) >= 3, Nsubj  = P{p}{3}; end
-    if numel(P{p}) >= 4, ix_pop = P{p}{4}; end
+    if numel(P{p}) >= 4, ix_pop = P{p}{4}; pop_id = ix_pop; end
     if numel(P{p}) >= 5, cm_map = P{p}{5}; end
     if numel(P{p}) >= 6, is_ct  = P{p}{6}; end
     if numel(P{p}) >= 7, do_bf  = P{p}{7}; end
@@ -149,7 +149,7 @@ for p=1:Npop % loop over populations
         case 'CROMISLABELS'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_smask).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_smask.*\.nii$');
-        case {'CROMIS','DELIRIUM'}
+        case {'CROMIS','DELIRIUM','ROB'}
             pths_im{1} = spm_select('FPList',dir_data,'^.*\.nii$');
         case {'IXI','IXIMISALIGN'}
             for c=1:C
