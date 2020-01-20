@@ -62,10 +62,9 @@ N       = min(N,numsubj);
 int_pop = [1 2 3 4];
 
 % Label information
-icgm = 7; isgm = 5; iwm = 4; icsf = 6; k1 = 8;
+icgm   = 7; isgm = 5; iwm = 4; icsf = 6; k1 = 8;
 cm_map = {{icgm,isgm,[isgm iwm],iwm,icsf, setdiff(1:k1,[icgm isgm])}, {}, {iwm,[]}, {}};
-% cgm sgm spn wm csf
-cm_map = cm_map(3);
+
 P1 = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p);
