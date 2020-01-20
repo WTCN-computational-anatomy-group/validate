@@ -62,12 +62,10 @@ N       = min(N,numsubj);
 int_pop = [1 2 3 4];
 
 % Label information
-if run3d, icgm = 7; isgm = 5; iwm = 4; icsf = 6; k1 = 8;
-else,     icgm = 7; isgm = 5; iwm = 4; icsf = 6; k1 = 8;
-end
+icgm = 7; isgm = 5; iwm = 4; icsf = 6; k1 = 8;
 cm_map = {{icgm,isgm,[isgm iwm],iwm,icsf, setdiff(1:k1,[icgm isgm])}, {}, {iwm,[]}, {}};
 % cgm sgm spn wm csf
-
+cm_map = cm_map(3);
 P1 = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p);
@@ -101,16 +99,13 @@ if model_num == 2, fprintf('=============\nMODEL 2\n=============\n\n');
 ixs    = [ix.IXI  ix.MICCAI2012 ix.BALGRIST];
 N      = [100 100 100]; % Set maximum number of subjects
 N      = min(N,numsubj);
-int_ix = [1 1 1];
-cm_map = {{},{},{}};
 
 % Define training population
 P1 = P(ixs);
 for p=1:numel(P1)    
     P1{p}{2} = {'T1'};
     P1{p}{3} = N(p);
-    P1{p}{4} = int_ix(p);
-    P1{p}{5} = cm_map{p};
+    P1{p}{4} = 1;
 end
 
 % Settings
