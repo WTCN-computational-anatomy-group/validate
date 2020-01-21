@@ -35,8 +35,8 @@ Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
 % Do.BALGRIST   = true;
 % Do.DELIRIUM   = true;
 % Do.IXI        = true;
-Do.MICCAI2012 = true;
-% Do.MRBRAINS18 = true;
+% Do.MICCAI2012 = true;
+Do.MRBRAINS18 = true;
 % Do.ROB = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,13 +352,13 @@ if Do.(Population)
     dat = struct; cnt = 1;
     for s=1:4:S
         dat(cnt).Nii{1}    = nifti;
-        dat(cnt).Nii{1}(1) = nifti(deblank(files(s,:)));     % FLAIR
-        dat(cnt).Nii{1}(2) = nifti(deblank(files(s + 1,:))); % IR
-        dat(cnt).Nii{1}(3) = nifti(deblank(files(s + 2,:))); % T1
+%         dat(cnt).Nii{1}(1) = nifti(deblank(files(s,:)));     % FLAIR
+%         dat(cnt).Nii{1}(2) = nifti(deblank(files(s + 1,:))); % IR
+        dat(cnt).Nii{1}(1) = nifti(deblank(files(s + 2,:))); % T1
         dat(cnt).Nii{2}    = nifti;
-        dat(cnt).Nii{2}(1) = nifti;
-        dat(cnt).Nii{2}(2) = nifti(deblank(files(s + 3,:))); % Labels
-        dat(cnt).Nii{2}(3) = nifti;
+%         dat(cnt).Nii{2}(1) = nifti;
+        dat(cnt).Nii{2}(1) = nifti(deblank(files(s + 3,:))); % Labels
+%         dat(cnt).Nii{2}(3) = nifti;
 
         if cnt == S0, break; end
         cnt = cnt + 1;    
@@ -370,10 +370,10 @@ if Do.(Population)
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.real_mni     = true; 
     opt.do.crop         = true;
-    opt.do.coreg        = true;
-    opt.do.reslice      = true;
-    opt.reslice.ref     = 3;
-%     opt.labels.part     = {1,2,[3,4,8],5,6,7};
+    opt.do.coreg        = false;
+    opt.do.reslice      = false;
+    opt.reslice.ref     = 1;
+    opt.labels.part     = {1,2,8,3,7,5,6}; % cgm,sgm,spn,wm,cer,csf,ven
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
     opt.do.go2native    = false;  

@@ -15,35 +15,34 @@ if model_num == 0, fprintf('=============\nMODEL 0\n=============\n\n');
 %------------------
 
 % Define training population
-ix_pop = [ix.IXI  ix.MICCAI2012 ix.BALGRIST];% ix.ATLAS ix.MRBRAINS18 ix.BALGRIST];% ix.DELIRIUM];
+ix_pop = [ix.MICCAI2012 ix.MRBRAINS18];
 N      = [100 100 100 4 12 80];
 N      = min(N,numsubj);
-% int_ix = [1 2];
+int_ix = [1 1 2];
 
 % Label information
-if run3d, igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 10;
-else,     igm = 1; icgm = 1; isgm = 1; iwm = 2; icsf = 3; iven = 3; k1 = 10;
-end
-cm_map = {{igm,iwm,iven,setdiff(1:k1,[iven])}, {}, {},{icgm,isgm,iwm,icsf,iven,[isgm iwm],setdiff(1:k1,[icgm iven])}, {iwm,[]}, {}};
+icgm   = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5; k1 = 10;
+cm_map = {{icgm,isgm,[isgm iwm],iwm,iven, setdiff(1:k1,[icgm isgm iven])}, ...
+          {icgm,isgm,[isgm iwm],iwm,[isgm iwm],icsf,iven,setdiff(1:k1,[icgm isgm iven])}, ...
+          {iwm,[]}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
-%     P1{p}{3} = numsubj(min(numel(numsubj),p));    
-    P1{p}{2} = {'T1'};
     P1{p}{3} = N(p); 
-    P1{p}{4} = 1;      
+    P1{p}{4} = int_ix(p);      
     P1{p}{5} = cm_map{p};
 end
+% P1{3}{2} = {'T1'};
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM'};
+sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
 sett.write.dir_res      = fullfile(dir_res,'results/model-0');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.model.mg_ix        = 1;
 sett.labels.use         = false; 
-sett.model.K            = 11;  
-sett.show.mx_subjects   = 2;
+sett.model.K            = 13;  
+sett.show.mx_subjects   = 6;
 sett.model.init_mu_dm   = 16;
 sett.nit.init           = 6;
 sett.write.mu           = [true true];
@@ -62,7 +61,7 @@ N       = min(N,numsubj);
 int_pop = [1 2 3 4];
 
 % Label information
-icgm   = 7; isgm = 5; iwm = 4; icsf = 6; k1 = 8;
+icgm   = 4; isgm = 6; iwm = 3; icsf = 5; k1 = 8;
 cm_map = {{icgm,isgm,[isgm iwm],iwm,icsf, setdiff(1:k1,[icgm isgm])}, {}, {iwm,[]}, {}};
 
 P1 = P(ix_pop);
@@ -80,9 +79,9 @@ sett.write.intermediate = true;
 sett.write.clean_vel    = false;
 sett.write.dir_res      = fullfile(dir_res,'results/model-1');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.labels.use         = false; 
+sett.labels.use         = true; 
 sett.model.K            = 7;  
-sett.model.mg_ix        = [1 1 1 2 3 4 5 6 7 8];
+sett.model.mg_ix        = [1 1 1 2 3 4 5 5 6 7 8];
 sett.show.mx_subjects   = 2;
 sett.write.mu           = [true true];
 sett.nit.init           = 6;
@@ -91,12 +90,12 @@ end
 
 if model_num == 2, fprintf('=============\nMODEL 2\n=============\n\n');
 %%%%%%%%%%%%%%%%%%%
-% Model 2 | Fit only T1 (use to InitGMM, K1=12), unsupervised
+% Model 2 | Fit only T1 (use to InitGMM, K1=14), unsupervised
 %------------------
 
 % Set training populations to use
 ixs    = [ix.IXI  ix.MICCAI2012 ix.BALGRIST];
-N      = [100 100 100]; % Set maximum number of subjects
+N      = [150 20 10]; % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Define training population
@@ -116,7 +115,7 @@ sett.write.clean_vel    = false;
 sett.write.dir_res      = fullfile(dir_res,'results/model-2');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.labels.use         = false; 
-sett.model.K            = 11;  
+sett.model.K            = 13;  
 sett.write.mu           = [true true];
 sett.nit.init           = 6;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory

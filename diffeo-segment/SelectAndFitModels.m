@@ -35,17 +35,17 @@ function SelectAndFitModels(opt)
 % -------------------------------------------------------------------------
 %     | Name         | Modality     | Labels                             | NumSubj 
 % -------------------------------------------------------------------------
-% 1   | ATLAS        | T1           | 1.les                              | 142     
-% 2   | BALGRIST     | T1,PD        | 1.spn                              | 19      
-% 3   | CROMIS       | CT           | n/a                                | 686     
-% 4   | CROMISLABELS | CT           | 1.les,2.cal                        | 60      
-% 5   | DELIRIUM     | CT           | n/a                                | 1,025   
-% 6   | IXI          | T1,T2,PD,MRA | n/a                                | 567     
-% 7   | IXIRC        | GM,WM,CSF    | n/a                                | 32      
-% 8   | IXIC         | GM,WM,CSF    | n/a                                | 32      
-% 9   | MICCAI2012   | T1           | 1.gm,2.wm,3.ven                    | 35     
-% 10  | MRBRAINS18   | T1,FLAIR,IR  | 1.cgm,2.sgm,3.wm,4.csf,5.ven,6.cer | 7       
-% 11  | ROB          | CT           | n/a                                | 72      
+% 1   | ATLAS        | T1           | 1.les                                    | 142     
+% 2   | BALGRIST     | T1,PD        | 1.spn                                    | 19      
+% 3   | CROMIS       | CT           | n/a                                      | 686     
+% 4   | CROMISLABELS | CT           | 1.les,2.cal                              | 60      
+% 5   | DELIRIUM     | CT           | n/a                                      | 1,025   
+% 6   | IXI          | T1,T2,PD,MRA | n/a                                      | 567     
+% 7   | IXIRC        | GM,WM,CSF    | n/a                                      | 32      
+% 8   | IXIC         | GM,WM,CSF    | n/a                                      | 32      
+% 9   | MICCAI2012   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.ven             | 35     
+% 10  | MRBRAINS18   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.cer,6.csf,7.ven | 7       
+% 11  | ROB          | CT           | n/a                                      | 72      
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -148,7 +148,7 @@ P{ix.CROMISLABELS} = {fullfile(dir_data,d_2D,'CROMISLABELS'),{'CT'}, Inf, [], {}
 P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),    {'CT'}, Inf, [], {}, true};
 P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),         {'T1','T2','PD'}, Inf, [], {}, false};
 P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),  {'T1'}, Inf, [], {}, false};
-P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),  {'T1','FLAIR'}, Inf, [], {}, false};
+P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),  {'T1'}, Inf, [], {}, false};
 P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),         {'CT'}, Inf, [], {}, true};
 
 % Populations of tissue segmentations (2D not available)
