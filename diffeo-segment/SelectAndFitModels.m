@@ -43,7 +43,7 @@ function SelectAndFitModels(opt)
 % 6   | IXI          | T1,T2,PD,MRA | n/a                                      | 567     
 % 7   | IXIRC        | GM,WM,CSF    | n/a                                      | 32      
 % 8   | IXIC         | GM,WM,CSF    | n/a                                      | 32      
-% 9   | MICCAI2012   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.ven             | 35     
+% 9   | MICCAI2012   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven       | 35     
 % 10  | MRBRAINS18   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.cer,6.csf,7.ven | 7       
 % 11  | ROB          | CT           | n/a                                      | 72      
 %
@@ -63,7 +63,7 @@ if ~isfield(opt,'run3d'), opt.run3d = false; end
 % 2D plane ['ax','cor','sag']
 if ~isfield(opt,'ax2d'), opt.ax2d = 'ax'; end 
 % Number of subjects
-if ~isfield(opt,'numsubj'), opt.numsubj = 20; end           
+if ~isfield(opt,'numsubj'), opt.numsubj = Inf; end           
 % Model 0 | Testing
 % Model 1 | Labels are used (K1=10), trying to get nice GM, WM and CSF
 % Model 2 | Labels are not used (K1=12), unsupervised for better normalisation

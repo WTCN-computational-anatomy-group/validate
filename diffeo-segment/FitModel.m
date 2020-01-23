@@ -52,7 +52,7 @@ end
 % dat2in()
 function in = dat2in(dat)
 Npop = numel(dat);
-s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[],'pop_id',[]);
+s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[]);
 for p=1:Npop % loop over populations
     pths_im = dat(p).pths_im;
     N       = size(pths_im{1},1);
@@ -71,7 +71,6 @@ for p=1:Npop % loop over populations
         if p == 1 && n == 1
             in        = s;
             in.F      = im;
-            in.pop_id = dat(p).pop_id;
             in.do_bf  = dat(p).do_bf;
             in.ix_pop = dat(p).ix_pop;
             in.is_ct  = dat(p).is_ct;
@@ -79,7 +78,6 @@ for p=1:Npop % loop over populations
         else
             ins        = s;
             ins.F      = im;
-            ins.pop_id = dat(p).pop_id;
             ins.do_bf  = dat(p).do_bf;
             ins.ix_pop = dat(p).ix_pop;
             ins.is_ct  = dat(p).is_ct;
@@ -103,18 +101,16 @@ for p=1:Npop % loop over populations
     % Defaults
     ix_pop = []; is_ct = false; do_bf = true; cm_map = []; Nsubj = Inf;
     
-    pop_id                      = p;
     dir_data                    = P{p}{1};
     modality                    = P{p}{2};    
     if numel(P{p}) >= 3, Nsubj  = P{p}{3}; end
-    if numel(P{p}) >= 4, ix_pop = P{p}{4}; pop_id = ix_pop; end
+    if numel(P{p}) >= 4, ix_pop = P{p}{4}; end
     if numel(P{p}) >= 5, cm_map = P{p}{5}; end
     if numel(P{p}) >= 6, is_ct  = P{p}{6}; end
     if numel(P{p}) >= 7, do_bf  = P{p}{7}; end
     
     if isempty(P{p}{4}), ix_pop = p; end
     
-    dat(p).pop_id = pop_id;
     dat(p).ix_pop = ix_pop;    
     dat(p).cm_map = cm_map;    
     dat(p).is_ct  = is_ct;    

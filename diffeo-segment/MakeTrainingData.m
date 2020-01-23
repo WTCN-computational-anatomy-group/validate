@@ -22,7 +22,7 @@ addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
 S0         = Inf;
 NumWorkers = 8;
 DirData0   = '/scratch/Nii/Original';
-DirOut     = '/scratch/Nii/Temp/';
+DirOut     = '/scratch/Nii/TrainingData/diffeo-segment';
 
 if ~(exist(DirOut,'dir') == 7), mkdir(DirOut); end
 
@@ -36,7 +36,7 @@ Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
 % Do.DELIRIUM   = true;
 % Do.IXI        = true;
 % Do.MICCAI2012 = true;
-Do.MRBRAINS18 = true;
+% Do.MRBRAINS18 = true;
 % Do.ROB = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -326,7 +326,8 @@ if Do.(Population)
                            [23 30 31 32 36 37 47 48 55 56 57 58 59 60 61 62 75 76 38 39 71 72 73], ...
                            [35], ...
                            [40 41 44 45 69], ...
-                           [4 11 46 49 50 51 52]};
+                           46, ...
+                           [4 11 49 50 51 52]};
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
     opt.do.go2native    = false;  
