@@ -99,39 +99,39 @@ end
 
 if model_num == 2, fprintf('=============\nMODEL 2\n=============\n\n');
 %%%%%%%%%%%%%%%%%%%
-% Model 2 | Fit only T1 (use to InitGMM, K1=14), unsupervised
+% Model 2 | Fit only T1 (use to InitGMM, K1=12), unsupervised
 %------------------
 
 % Set training populations to use
 ixs    = [ix.IXI  ix.MICCAI2012 ix.BALGRIST];
 N      = [150 20 10]; % Set maximum number of subjects
-N      = min(N,repmat(numsubj,[1 numel(ixs)]));
+N      = min(N,numsubj);
 
 % Define training population
 P1 = P(ixs);
 for p=1:numel(P1)    
     P1{p}{2} = {'T1'};
     P1{p}{3} = N(p);
-    P1{p}{4} = 1;
+    P1{p}{4} = p;
 end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity'};
+sett.show.figs          = {'model','segmentations'};
 sett.model.init_mu_dm   = 16;  
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
 sett.write.dir_res      = fullfile(dir_res,'results/model-2');
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.labels.use         = false; 
-sett.model.K            = 13;  
+sett.model.K            = 11;  
 sett.write.mu           = [true true];
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
 if model_num == 3, fprintf('=============\nMODEL 3\n=============\n\n');
 %%%%%%%%%%%%%%%%%%%
-% Model 3 | Template prop BALGRIST, K1=8, get GM, WM, CSF
+% Model 3 | Template prop with MRBRAINS18, K1=8, get GM, WM, CSF
 %------------------
 
 % Define training population
@@ -161,7 +161,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM'};
+sett.show.figs          = {'model','segmentations'};
 sett.model.init_mu_dm   = 16;  
 sett.write.intermediate = false;
 sett.write.clean_vel    = false;
