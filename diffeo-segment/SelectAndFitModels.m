@@ -168,7 +168,7 @@ function [dir_data,dir_res] = UserSpecific(user)
 if strcmp(user,'mbrud-home')    
     addpath('/home/smajjk/dev/diffeo-segment')
     addpath('/home/smajjk/dev/auxiliary-functions')
-    dir_data = '/home/smajjk/Data/Nii/diffeo-segment/TrainingData2D';
+    dir_data = '/home/smajjk/Data/Nii/diffeo-segment/';
     dir_res  = '/home/smajjk/Data/Results/diffeo-segment';
 elseif strcmp(user,'mbrud-fil')    
     addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')
