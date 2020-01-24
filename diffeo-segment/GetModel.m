@@ -135,7 +135,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM'};
+sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
 sett.model.init_mu_dm   = 16;  
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
@@ -213,7 +213,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM'};
+sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
 sett.model.init_mu_dm   = 16;  
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;
