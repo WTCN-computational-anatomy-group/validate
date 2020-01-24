@@ -211,6 +211,7 @@ if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.labels.use         = false; 
 sett.model.K            = 11;  
 sett.write.mu           = [true true];
+sett.model.crop_mu      = false;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 end
