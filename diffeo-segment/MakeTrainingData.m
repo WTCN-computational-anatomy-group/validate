@@ -4,7 +4,7 @@ addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
 %
 % [x] | 1.ATLAS        | T1           | 1.les                 | N = 142
 % [x] | 2.BALGRIST     | T1           | 1.spn                 | N = 19
-% [x] | 3.CROMIS       | CT           | n/a                   | N = 686
+% [x] | 3.CROMIS       | CT           | n/a                   | N = 626
 % [x] | 4.CROMISLABELS | CT           | 1.les,2.cal           | N = 60
 % [x] | 5.DELIRIUM     | CT           | n/a                   | N = 1,025
 % [x] | 6.IXI          | T1,T2,PD,MRA | n/a                   | N = 567
@@ -31,13 +31,15 @@ Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
             'DELIRIUM',Do,'IXI',Do,'MICCAI2012',Do,'MRBRAINS18',Do,'RIRE',Do, ...
             'ROB',Do);   
         
-% Do.ATLAS      = true;
-% Do.BALGRIST   = true;
-% Do.DELIRIUM   = true;
-% Do.IXI        = true;
-% Do.MICCAI2012 = true;
-% Do.MRBRAINS18 = true;
-% Do.ROB = true;
+% Do.ATLAS        = true;
+% Do.BALGRIST     = true;
+Do.CROMIS       = true;
+Do.CROMISLABELS = true;
+% Do.DELIRIUM     = true;
+% Do.IXI          = true;
+% Do.MICCAI2012   = true;
+% Do.MRBRAINS18   = true;
+% Do.ROB          = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ATLAS
@@ -70,7 +72,8 @@ if Do.(Population)
     opt.do.real_mni     = true; 
     opt.do.crop         = true;
     opt.do.write2d      = true;
-    opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);     
+    opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -117,6 +120,7 @@ if Do.BALGRIST
     opt.reslice.ref     = 1;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -147,17 +151,19 @@ if Do.(Population)
     end
 
     % Set options and do preprocessing
-    opt         = struct;
-    opt.do.vx   = true; 
-    opt.vx.size = 1;        
-    opt.vx.deg  = 0;
+    opt                 = struct;
+    opt.do.vx           = true; 
+    opt.vx.size         = 1;        
+    opt.vx.deg          = 0;
     opt.dir_out         = fullfile(DirOut,Population);    
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.res_orig     = true;
     opt.do.real_mni     = true;
     opt.do.crop         = true;
+    opt.crop.keep_neck  = false;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -190,17 +196,20 @@ if Do.(Population)
     end
 
     % Set options and do preprocessing
-    opt         = struct;
-    opt.do.vx   = true; 
-    opt.vx.size = 1;        
-    opt.vx.deg  = 0;
+    opt                 = struct;
+    opt.do.vx           = true; 
+    opt.vx.size         = 1;        
+    opt.vx.deg          = 0;
     opt.dir_out         = fullfile(DirOut,Population);    
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.res_orig     = true;
     opt.do.real_mni     = true;
     opt.do.crop         = true;
+    opt.crop.keep_neck  = false;
+    opt.labels.part     = {1};
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -231,17 +240,19 @@ if Do.(Population)
     end
 
     % Set options and do preprocessing
-    opt         = struct;
-    opt.do.vx   = true; 
-    opt.vx.size = 1;        
-    opt.vx.deg  = 0;
+    opt                 = struct;
+    opt.do.vx           = true; 
+    opt.vx.size         = 1;        
+    opt.vx.deg          = 0;
     opt.dir_out         = fullfile(DirOut,Population);     
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.res_orig     = true;
     opt.do.real_mni     = true;
     opt.do.crop         = true;
+    opt.crop.keep_neck  = false;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -285,6 +296,7 @@ if Do.(Population)
     opt.reslice.ref     = 3;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -330,6 +342,7 @@ if Do.(Population)
                            [4 11 49 50 51 52]};
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers <= 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -377,6 +390,7 @@ if Do.(Population)
     opt.labels.part     = {1,2,8,3,7,5,6}; % cgm,sgm,spn,wm,cer,csf,ven
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -417,6 +431,7 @@ if Do.(Population)
     opt.reslice.ref     = 3;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
@@ -447,13 +462,14 @@ if Do.(Population)
     end
 
     % Set options and do preprocessing
-    opt         = struct;
+    opt                 = struct;
     opt.dir_out         = fullfile(DirOut,Population);    
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end    
     opt.do.real_mni     = true;
     opt.do.crop         = true;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     opt.do.go2native    = false;  
     if NumWorkers == 1 || S0 == 1
         for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
