@@ -4,7 +4,7 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % 1. Template prop MRBRAINS18, (K1=12), get CGM, SGM, WM, CSF, VEN
 % 2. Fit only T1 (K1=12)
 % 3. Template prop MRBRAINS18, (K1=8), get GM, WM, CSF
-% 4. Fit only IXI T1,T2 and PD (K1=12)
+% 4. Fit IXI (K1=12)
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
@@ -89,6 +89,7 @@ for p=1:numel(P1)
     P1{p}{4} = int_pop(p);  
     P1{p}{5} = cm_map{p};
 end
+P1{4}{2} = {'T1','T2','PD'};
 
 % Settings
 sett                    = struct;
@@ -168,6 +169,7 @@ for p=1:numel(P1)
     P1{p}{4} = int_pop(p);  
     P1{p}{5} = cm_map{p};
 end
+P1{4}{2} = {'T1','T2','PD'};
 
 % Settings
 sett                    = struct;
@@ -186,24 +188,21 @@ if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % cl
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 4 | Fit only IXI T1,T2 and PD (K1=12)
+% Model 4 | Fit IXI (K1=12)
 %------------------
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
-% Set training populations to use
-ixs = ix.IXI;
-N   = 200; % Set maximum number of subjects
-N   = min(N,numsubj);
+
+N = 100; % Set maximum number of subjects
+N = min(N,numsubj);
 
 % Define training population
-P1 = P(ixs);
-for p=1:numel(P1)    
-    P1{p}{3} = N(p);
-    P1{p}{4} = p;
-end
+P1       = P(ix.IXI);  
+% P1{1}{2} = {'T1','T2','PD'}; % uncomment to not include MRA
+P1{1}{3} = N;
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+sett.show.figs          = {'model','segmentations','InitGMM'};
 sett.model.init_mu_dm   = 16;  
 sett.write.intermediate = true;
 sett.write.clean_vel    = false;

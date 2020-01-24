@@ -1,4 +1,8 @@
 function SelectAndFitModels(opt)
+%
+% EXAMPLE
+% - SelectAndFitModels(struct('user','mbrud-home','models',4,'ax2d','sag','numsubj',4))
+%
 % TODO
 % -------------------------------------------------------------------------
 % [ ] Tidy up code after inclusion of InitGMM
@@ -146,7 +150,7 @@ P{ix.BALGRIST}     = {fullfile(dir_data,d_2D,'BALGRIST'),    {'T1','PD'}, Inf, [
 P{ix.CROMIS}       = {fullfile(dir_data,d_2D,'CROMIS'),      {'CT'}, Inf, [], {}, true};
 P{ix.CROMISLABELS} = {fullfile(dir_data,d_2D,'CROMISLABELS'),{'CT'}, Inf, [], {}, true};
 P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),    {'CT'}, Inf, [], {}, true};
-P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),         {'T1','T2','PD'}, Inf, [], {}, false};
+P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),         {'T1','T2','PD','MRA'}, Inf, [], {}, false};
 P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),  {'T1'}, Inf, [], {}, false};
 P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),  {'T1'}, Inf, [], {}, false};
 P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),         {'CT'}, Inf, [], {}, true};
