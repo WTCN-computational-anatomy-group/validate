@@ -1,17 +1,10 @@
 function SelectAndFitModels(opt)
 %
-% EXAMPLE
-% - SelectAndFitModels(struct('user','mbrud-home','models',4,'ax2d','sag','numsubj',4))
-%
-% TODO
 % -------------------------------------------------------------------------
-% [ ] Tidy up code after inclusion of InitGMM
-% [ ] Make useable for single subject again
-% [ ] Labels and InitGMM (mu..)
-% [ ] Introduce mg later
-% [ ] NaNs or template in resps that have no obs?
-% [ ] InitGMM and CT data
-% [ ] vel reg increase
+% EXAMPLE
+% -------------------------------------------------------------------------
+%
+% - SelectAndFitModels(struct('user','mbrud-home','models',4,'ax2d','sag','numsubj',4))
 %
 % -------------------------------------------------------------------------
 % QUESTIONS
