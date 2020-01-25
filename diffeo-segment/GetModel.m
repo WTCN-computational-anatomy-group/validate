@@ -51,17 +51,18 @@ sett                    = struct;
 sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+sett.write.mu           = [true true];
 sett.model.mg_ix        = 1;
 sett.labels.use         = false; 
 sett.model.K            = K;  
 sett.show.mx_subjects   = 2;
-sett.write.mu           = [true true];
 sett.var.v_settings     = [1e-4 0 0.2 0.05 0.2]*4;     
+sett.model.init_mu_dm   = 16;  
 sett.do.updt_vel        = true;
 sett.do.updt_aff        = true;
 sett.do.updt_int        = true;
 sett.do.updt_template   = true;
-if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
 %%%%%%%%%%%%%%%%%%%
@@ -97,18 +98,19 @@ P1{4}{2} = {'T1','T2','PD'};
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
-sett.model.init_mu_dm   = 32;  
-sett.write.intermediate = false;
-sett.write.clean_vel    = false;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
+sett.write.mu           = [true true];
+sett.write.intermediate = false;
+sett.write.affine       = true;
+sett.write.vel          = true;
 sett.labels.use         = true; 
 sett.model.K            = K;  
 sett.model.mg_ix        = 1;
 sett.model.ix_init_pop  = 1;   
 sett.show.mx_subjects   = 2;
-sett.write.mu           = [true true];
-if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
+sett.model.crop_mu      = true;
 end
 
 %%%%%%%%%%%%%%%%%%%
@@ -135,15 +137,16 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
-sett.model.init_mu_dm   = 16;  
-sett.write.intermediate = true;
-sett.write.clean_vel    = false;
+sett.show.figs          = {'model','segmentations','InitGMM','intensity','parameters'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+sett.write.intermediate = true;
+sett.write.affine       = true;
+sett.write.vel          = true;
+sett.write.mu           = [true true];
 sett.labels.use         = false; 
 sett.model.K            = K;  
-sett.write.mu           = [true true];
+sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -181,16 +184,17 @@ P1{4}{2} = {'T1','T2','PD'};
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations'};
-sett.model.init_mu_dm   = 16;  
-sett.write.intermediate = false;
-sett.write.clean_vel    = false;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+sett.write.intermediate = false;
+sett.write.affine       = true;
+sett.write.vel          = true;
+sett.write.mu           = [true true];
 sett.labels.use         = true; 
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;   
 sett.show.mx_subjects   = 2;
-sett.write.mu           = [true true];
+sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
 end
 
@@ -213,16 +217,15 @@ P1{1}{3} = N;
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
-sett.model.init_mu_dm   = 16;  
-sett.write.intermediate = true;
-sett.write.clean_vel    = false;
+sett.show.figs          = {'model','segmentations','InitGMM','intensity','parameters'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+sett.write.intermediate = true;
+sett.write.affine       = true;
+sett.write.vel          = true;
+sett.write.mu           = [true true];
 sett.labels.use         = false; 
 sett.model.K            = K;  
-sett.write.mu           = [true true];
-sett.model.crop_mu      = false;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -253,15 +256,19 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
+sett.show.figs          = {'model','segmentations','InitGMM','intensity','parameters'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.intermediate = true;
+sett.write.affine       = true;
+sett.write.vel          = true;
+sett.write.mu           = [true true];
+sett.write.tc           = [false true false]; 
 sett.model.mg_ix        = 1;
-sett.labels.use         = true; 
+sett.labels.use         = false; 
+sett.labels.use_initgmm = false;
 sett.model.K            = K;  
 sett.show.mx_subjects   = 4;
-sett.write.mu           = [true true];
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
