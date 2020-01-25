@@ -114,9 +114,9 @@ for p=1:Npop % loop over populations
     dat(p).ix_pop = ix_pop;    
     dat(p).cm_map = cm_map;    
     dat(p).is_ct  = is_ct;    
-    if is_ct, dat(p).do_bf = false;
-    else,     dat(p).do_bf = do_bf;
-    end
+%     if is_ct, dat(p).do_bf = false;
+%     else,     dat(p).do_bf = do_bf;
+%     end
      
     % Get name of population (assumed to be folder name)
     name = strsplit(dir_data,filesep);
