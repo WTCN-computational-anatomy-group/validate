@@ -42,7 +42,8 @@ function SelectAndFitModels(opt)
 % 8   | IXIC         | GM,WM,CSF    | n/a                                      | 32      
 % 9   | MICCAI2012   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven       | 35     
 % 10  | MRBRAINS18   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.cer,6.csf,7.ven | 7       
-% 11  | ROB          | CT           | n/a                                      | 72      
+% 11  | ROB          | CT           | n/a                                      | 72    
+% 12  | MPMCOMPLIANT | MPM          | n/a                                      | N = 10
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -119,7 +120,7 @@ end
 function [P,ix] = GetPopulations(dir_data,opt)
 % Get available populations
 %
-% P{i} = {'NAME',{MOD1,..,MODC},NumSubj,PopIx,cm_map,CT,DoBF}
+% P{i} = {'NAME',{MOD1,..,MODC},NumSubj,PopIx,cm_map,CT,do_bf,do_dc}
 
 ax2d  = opt.ax2d;
 run3d = opt.run3d;
@@ -134,19 +135,21 @@ else
 end
 
 ix = struct('ATLAS',1,'BALGRIST',2,'CROMIS',3,'CROMISLABELS',4,'DELIRIUM',5, ...
-            'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10,'ROB',11);
+            'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10,'ROB',11, ...
+            'MPMCOMPLIANT',12);
 P  = cell(1,numel(ix));
 
 % Populations of images (GMM will be fitted)
-P{ix.ATLAS}        = {fullfile(dir_data,d_2D,'ATLAS'),       {'T1'}, Inf, [], {}, false};
-P{ix.BALGRIST}     = {fullfile(dir_data,d_2D,'BALGRIST'),    {'T1','PD'}, Inf, [], {}, false};
-P{ix.CROMIS}       = {fullfile(dir_data,d_2D,'CROMIS'),      {'CT'}, Inf, [], {}, true};
-P{ix.CROMISLABELS} = {fullfile(dir_data,d_2D,'CROMISLABELS'),{'CT'}, Inf, [], {}, true};
-P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),    {'CT'}, Inf, [], {}, true};
-P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),         {'T1','T2','PD','MRA'}, Inf, [], {}, false};
-P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),  {'T1'}, Inf, [], {}, false};
-P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),  {'T1'}, Inf, [], {}, false};
-P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),         {'CT'}, Inf, [], {}, true};
+P{ix.ATLAS}        = {fullfile(dir_data,d_2D,'ATLAS'),        {'T1'}, Inf, [], {}, false, true, true};
+P{ix.BALGRIST}     = {fullfile(dir_data,d_2D,'BALGRIST'),     {'T1','PD'}, Inf, [], {}, false, true, true};
+P{ix.CROMIS}       = {fullfile(dir_data,d_2D,'CROMIS'),       {'CT'}, Inf, [], {}, true, true, false};
+P{ix.CROMISLABELS} = {fullfile(dir_data,d_2D,'CROMISLABELS'), {'CT'}, Inf, [], {}, true, true, false};
+P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),     {'CT'}, Inf, [], {}, true, true, false};
+P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),          {'T1','T2','PD','MRA'}, Inf, [], {}, false, true, true};
+P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),   {'T1'}, Inf, [], {}, false, true, true};
+P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),   {'T1'}, Inf, [], {}, false, true, true};
+P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),          {'CT'}, Inf, [], {}, true, true, false};
+P{ix.MPMCOMPLIANT} = {fullfile(dir_data,d_2D,'MPMCOMPLIANT'), {'MT','PD','R2','T1'}, Inf, [], {}, false, true, false};
 
 % Populations of tissue segmentations (2D not available)
 P{ix.IXIC}  = {fullfile(dir_data,'IXIC'),  {'GM','WM','CSF'}, Inf, [], {}, false};
@@ -168,7 +171,7 @@ if strcmp(user,'mbrud-home')
     dir_data = '/home/smajjk/Data/Nii/diffeo-segment/';
     dir_res  = '/home/smajjk/Data/Results/diffeo-segment';
 elseif strcmp(user,'mbrud-fil')    
-    addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')
+    addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment-new')
     addpath('/home/mbrud/dev/mbrud/code/matlab/auxiliary-functions')
     dir_data = '/scratch/Nii/TrainingData/diffeo-segment/';
     dir_res  = '/scratch/Results/diffeo-segment';

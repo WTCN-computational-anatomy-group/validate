@@ -2,16 +2,17 @@ addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
 %
 % POPULATIONS
 %
-% [x] | 1.ATLAS        | T1           | 1.les                 | N = 142
-% [x] | 2.BALGRIST     | T1           | 1.spn                 | N = 19
-% [x] | 3.CROMIS       | CT           | n/a                   | N = 626
-% [x] | 4.CROMISLABELS | CT           | 1.les,2.cal           | N = 60
-% [x] | 5.DELIRIUM     | CT           | n/a                   | N = 1,025
-% [x] | 6.IXI          | T1,T2,PD,MRA | n/a                   | N = 567
-% [x] | 7.MICCAI2012   | T1           | 1.gm,2.wn,3.ven       | N = 35
-% [x] | 8.MRBRAINS18   | T1,FLAIR,IR  | 1.gm,2.wn,3.ven,4.cer | N = 7 
-% [ ] | 9.RIRE         | T1,T2,PD,CT  | n/a                   | N = 19
-% [x] | 10.ROB         | CT           | n/a                   | N = 72
+% [x] | 1.ATLAS         | T1           | 1.les                 | N = 142
+% [x] | 2.BALGRIST      | T1           | 1.spn                 | N = 19
+% [x] | 3.CROMIS        | CT           | n/a                   | N = 626
+% [x] | 4.CROMISLABELS  | CT           | 1.les,2.cal           | N = 60
+% [x] | 5.DELIRIUM      | CT           | n/a                   | N = 1,025
+% [x] | 6.IXI           | T1,T2,PD,MRA | n/a                   | N = 567
+% [x] | 7.MICCAI2012    | T1           | 1.gm,2.wn,3.ven       | N = 35
+% [x] | 8.MRBRAINS18    | T1,FLAIR,IR  | 1.gm,2.wn,3.ven,4.cer | N = 7 
+% [ ] | 9.RIRE          | T1,T2,PD,CT  | n/a                   | N = 19
+% [x] | 10.ROB          | CT           | n/a                   | N = 72
+% [ ] | 11.MPMCOMPLIANT | MPM          | n/a                   | N = 10
 %
 %__________________________________________________________________________
 
@@ -22,24 +23,25 @@ addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
 S0         = Inf;
 NumWorkers = 8;
 DirData0   = '/scratch/Nii/Original';
-DirOut     = '/scratch/Nii/TrainingData/diffeo-segment';
+DirOut     = '/scratch/Nii/TrainingData/diffeo-segment-new';
 
 if ~(exist(DirOut,'dir') == 7), mkdir(DirOut); end
 
 Do = false;
 Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
             'DELIRIUM',Do,'IXI',Do,'MICCAI2012',Do,'MRBRAINS18',Do,'RIRE',Do, ...
-            'ROB',Do);   
+            'ROB',Do,'MPMCOMPLIANT',Do);   
         
 % Do.ATLAS        = true;
 % Do.BALGRIST     = true;
-Do.CROMIS       = true;
-Do.CROMISLABELS = true;
+% Do.CROMIS       = true;
+% Do.CROMISLABELS = true;
 % Do.DELIRIUM     = true;
 % Do.IXI          = true;
 % Do.MICCAI2012   = true;
 % Do.MRBRAINS18   = true;
 % Do.ROB          = true;
+Do.MPMCOMPLIANT = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ATLAS
@@ -467,6 +469,46 @@ if Do.(Population)
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end    
     opt.do.real_mni     = true;
     opt.do.crop         = true;
+    opt.do.write2d      = true;
+    opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
+    if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
+    opt.do.go2native    = false;  
+    if NumWorkers == 1 || S0 == 1
+        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+    else
+        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MPMCOMPLIANT
+%-------------------------------------
+Population = 'MPMCOMPLIANT';
+if Do.(Population)
+    fprintf('======================================\n')
+    fprintf('| %s\n',Population);
+    fprintf('======================================\n')
+
+    DirData = fullfile(DirData0,Population);
+    files   = spm_select('FPListRec',DirData,'^.*\.nii$');
+    S       = size(files,1);
+
+    dat = struct; cnt = 1;
+    for s=1:4:S
+        dat(cnt).Nii{1}    = nifti;
+        dat(cnt).Nii{1}(1) = nifti(deblank(files(s,:)));     % MT
+        dat(cnt).Nii{1}(2) = nifti(deblank(files(s + 1,:))); % PD
+        dat(cnt).Nii{1}(3) = nifti(deblank(files(s + 2,:))); % R2
+        dat(cnt).Nii{1}(4) = nifti(deblank(files(s + 3,:))); % T1
+
+        if cnt == S0, break; end
+        cnt = cnt + 1;    
+    end
+
+    % Set options and do preprocessing
+    opt = struct;
+    opt.dir_out         = fullfile(DirOut,Population);
+    if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
+    opt.do.real_mni     = true;
     opt.do.write2d      = true;
     opt.dir_out2d       = fullfile(DirOut,['2D_' Population]);
     if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end

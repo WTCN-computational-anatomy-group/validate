@@ -52,7 +52,7 @@ end
 % dat2in()
 function in = dat2in(dat)
 Npop = numel(dat);
-s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[]);
+s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[],'do_dc',[]);
 for p=1:Npop % loop over populations
     pths_im = dat(p).pths_im;
     N       = size(pths_im{1},1);
@@ -72,6 +72,7 @@ for p=1:Npop % loop over populations
             in        = s;
             in.F      = im;
             in.do_bf  = dat(p).do_bf;
+            in.do_dc  = dat(p).do_dc;
             in.ix_pop = dat(p).ix_pop;
             in.is_ct  = dat(p).is_ct;
             in.labels = lab;
@@ -79,6 +80,7 @@ for p=1:Npop % loop over populations
             ins        = s;
             ins.F      = im;
             ins.do_bf  = dat(p).do_bf;
+            ins.do_dc  = dat(p).do_dc;
             ins.ix_pop = dat(p).ix_pop;
             ins.is_ct  = dat(p).is_ct;
             ins.labels = lab;
@@ -95,11 +97,12 @@ function [dat,sett] = pop2dat(P,sett)
 
 Npop = numel(P);
 cl   = cell(Npop,1);
-dat  = struct('pths_im',cl,'pths_lab',cl,'do_bf',cl,'ix_pop',cl,'is_ct',cl,'cm_map',cl,'pop_id',cl);
+dat  = struct('pths_im',cl,'pths_lab',cl,'do_bf',cl,'ix_pop',cl,'is_ct',cl, ...
+              'do_dc',cl,'cm_map',cl,'pop_id',cl);
 for p=1:Npop % loop over populations
     
     % Defaults
-    ix_pop = []; is_ct = false; do_bf = true; cm_map = []; Nsubj = Inf;
+    ix_pop = []; is_ct = false; do_bf = true; cm_map = []; Nsubj = Inf; do_dc = true;
     
     dir_data                    = P{p}{1};
     modality                    = P{p}{2};    
@@ -108,12 +111,15 @@ for p=1:Npop % loop over populations
     if numel(P{p}) >= 5, cm_map = P{p}{5}; end
     if numel(P{p}) >= 6, is_ct  = P{p}{6}; end
     if numel(P{p}) >= 7, do_bf  = P{p}{7}; end
+    if numel(P{p}) >= 8, do_dc  = P{p}{8}; end
     
     if isempty(P{p}{4}), ix_pop = p; end
     
     dat(p).ix_pop = ix_pop;    
     dat(p).cm_map = cm_map;    
     dat(p).is_ct  = is_ct;    
+    dat(p).do_bf  = do_bf;    
+    dat(p).do_dc  = do_dc; 
 %     if is_ct, dat(p).do_bf = false;
 %     else,     dat(p).do_bf = do_bf;
 %     end
@@ -168,6 +174,18 @@ for p=1:Npop % loop over populations
         case 'MICCAI2012'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_glm).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_glm.*\.nii$');
+        case 'MPMCOMPLIANT'
+            for c=1:C
+                if strcmp(modality{c},'MT')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!T1w|PDw|R2s).)*\.nii$');
+                elseif strcmp(modality{c},'PD')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!MTw|T1w|R2s).)*\.nii$');
+                elseif strcmp(modality{c},'R2')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!MTw|PDw|T1w).)*\.nii$');
+                elseif strcmp(modality{c},'T1')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!MTw|PDw|R2s).)*\.nii$');    
+                end
+            end                    
         case 'MRBRAINS18'       
             for c=1:C
                 pths_im{c} = spm_select('FPList',dir_data,['-' modality{c} '.*\.nii$']);
