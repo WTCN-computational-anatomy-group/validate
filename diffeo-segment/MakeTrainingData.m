@@ -23,7 +23,7 @@ addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
 S0         = Inf;
 NumWorkers = 8;
 DirData0   = '/scratch/Nii/Original';
-DirOut     = '/scratch/Nii/TrainingData/diffeo-segment-new';
+DirOut     = '/scratch/Nii/TrainingData/diffeo-segment';
 
 if ~(exist(DirOut,'dir') == 7), mkdir(DirOut); end
 
@@ -41,7 +41,7 @@ Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
 % Do.MICCAI2012   = true;
 % Do.MRBRAINS18   = true;
 % Do.ROB          = true;
-Do.MPMCOMPLIANT = true;
+% Do.MPMCOMPLIANT = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ATLAS
@@ -156,7 +156,7 @@ if Do.(Population)
     opt                 = struct;
     opt.do.vx           = true; 
     opt.vx.size         = 1;        
-    opt.vx.deg          = 0;
+    opt.vx.deg          = 1;
     opt.dir_out         = fullfile(DirOut,Population);    
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.res_orig     = true;
@@ -201,7 +201,7 @@ if Do.(Population)
     opt                 = struct;
     opt.do.vx           = true; 
     opt.vx.size         = 1;        
-    opt.vx.deg          = 0;
+    opt.vx.deg          = 1;
     opt.dir_out         = fullfile(DirOut,Population);    
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.res_orig     = true;
@@ -245,7 +245,7 @@ if Do.(Population)
     opt                 = struct;
     opt.do.vx           = true; 
     opt.vx.size         = 1;        
-    opt.vx.deg          = 0;
+    opt.vx.deg          = 1;
     opt.dir_out         = fullfile(DirOut,Population);     
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.res_orig     = true;
@@ -465,6 +465,9 @@ if Do.(Population)
 
     % Set options and do preprocessing
     opt                 = struct;
+    opt.do.vx           = true; 
+    opt.vx.size         = 1;        
+    opt.vx.deg          = 1;
     opt.dir_out         = fullfile(DirOut,Population);    
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end    
     opt.do.real_mni     = true;
@@ -505,7 +508,7 @@ if Do.(Population)
     end
 
     % Set options and do preprocessing
-    opt = struct;
+    opt                 = struct;
     opt.dir_out         = fullfile(DirOut,Population);
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.real_mni     = true;
