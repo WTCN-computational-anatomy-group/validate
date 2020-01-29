@@ -36,14 +36,14 @@ setenv('SPM_NUM_THREADS',sprintf('%d',-1));
 
 if do_gw
     % Run Groupwise
-    [dat,model,sett] = spm_mb_fit(in,'sett',sett);
+    [dat,mu,sett] = spm_mb_fit(in,'sett',sett);
 else
     % Run Register
-    [dat,model,sett] = spm_mb_fit(in,'model',model,'sett',sett);
+    [dat,mu,sett] = spm_mb_fit(in,'model',model,'sett',sett);
 end
 
 % Write results in normalised space
-spm_mb_output(dat,model,sett);
+spm_mb_output(dat,mu,sett);
 
 end
 %==========================================================================

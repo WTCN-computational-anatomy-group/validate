@@ -29,8 +29,7 @@ N      = min(N,numsubj);
 int_ix = [1 2];
 
 % Number of template classes
-K  = 5;
-K1 = K + 1;
+K = 5; K1 = K + 1;
 
 % Label information
 % icgm   = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5;
@@ -77,8 +76,7 @@ N       = min(N,numsubj);
 int_pop = [1 1 2 3 4];
 
 % Number of template classes
-K  = 11;
-K1 = K + 1;
+K = 11; K1 = K + 1;
 
 % Label information
 icgm   = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5;
@@ -124,8 +122,7 @@ N      = [150 20 10]; % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
-K  = 11;
-K1 = K + 1;
+K = 11; K1 = K + 1;
 
 % Define training population
 P1 = P(ixs);
@@ -163,8 +160,7 @@ N       = min(N,numsubj);
 int_pop = [1 2 3 4 5];
 
 % Number of template classes
-K  = 5;
-K1 = K + 1;
+K = 5; K1 = K + 1;
 
 % Label information
 igm = 1; iwm = 2; icsf = 3;
@@ -186,7 +182,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity'};
+sett.show.figs          = {'model','segmentations'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.workspace    = true;
@@ -197,7 +193,7 @@ sett.labels.use         = true;
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
 sett.show.mx_subjects   = 2;
-sett.model.mg_ix        = [1 2 3 3 4 4 4 5 5 5 6 6 6];
+sett.model.mg_ix        = 1;%[1 2 3 3 4 4 4 5 5 5 6 6 6];
 sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
 end
@@ -214,8 +210,7 @@ N       = min(N,numsubj);
 int_pop = [1 2];
 
 % Number of template classes
-K  = 11;
-K1 = K + 1;
+K = 11; K1 = K + 1;
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
@@ -250,8 +245,7 @@ N      = Inf*ones(1,numel(ix_pop)); % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
-K  = 11;
-K1 = K + 1;
+K = 11; K1 = K + 1;
  
 % Label information
 iles   = 1;
