@@ -93,7 +93,7 @@ for p=1:numel(P1)
     P1{p}{4} = int_pop(p);  
     P1{p}{5} = cm_map{p};
 end
-P1{4}{2} = {'T1','T2','PD'};
+% P1{4}{2} = {'T1','T2','PD'};
 
 % Settings
 sett                    = struct;
@@ -102,7 +102,7 @@ sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
 sett.write.mu           = [true true];
-sett.write.intermediate = false;
+sett.write.workspace    = true;
 sett.write.affine       = true;
 sett.write.vel          = true;
 sett.labels.use         = true; 
@@ -132,21 +132,22 @@ P1 = P(ixs);
 for p=1:numel(P1)    
     P1{p}{2} = {'T1'};
     P1{p}{3} = N(p);
-    P1{p}{4} = p;
+    P1{p}{4} = 1;
 end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity','parameters'};
+sett.show.figs          = {'model','segmentations'};
+sett.show.mx_subjects   = 2;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.write.intermediate = true;
+sett.write.workspace    = true;
 sett.write.affine       = true;
 sett.write.vel          = true;
 sett.write.mu           = [true true];
 sett.labels.use         = false; 
 sett.model.K            = K;  
-sett.model.crop_mu      = true;
+sett.var.v_settings     = [1e-4 0 0.2 0.05 0.2]*2;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -162,7 +163,7 @@ N       = min(N,numsubj);
 int_pop = [1 2 3 4 5];
 
 % Number of template classes
-K  = 7;
+K  = 5;
 K1 = K + 1;
 
 % Label information
@@ -179,14 +180,16 @@ for p=1:numel(P1)
     P1{p}{4} = int_pop(p);  
     P1{p}{5} = cm_map{p};
 end
-P1{4}{2} = {'T1','T2','PD'};
+if numel(P1) >= 4
+    P1{4}{2} = {'T1','T2','PD'};
+end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+sett.show.figs          = {'model','segmentations','intensity'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.write.intermediate = false;
+sett.write.workspace    = true;
 sett.write.affine       = true;
 sett.write.vel          = true;
 sett.write.mu           = [true true];
@@ -194,6 +197,7 @@ sett.labels.use         = true;
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
 sett.show.mx_subjects   = 2;
+sett.model.mg_ix        = [1 2 3 3 4 4 4 5 5 5 6 6 6];
 sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
 end
@@ -225,7 +229,7 @@ sett                    = struct;
 sett.show.figs          = {'model','segmentations'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.write.intermediate = true;
+sett.write.workspace    = true;
 sett.write.affine       = true;
 sett.write.vel          = true;
 sett.write.mu           = [true true];
@@ -265,7 +269,7 @@ sett                    = struct;
 sett.show.figs          = {'model','segmentations','InitGMM','intensity','parameters'};
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.write.intermediate = true;
+sett.write.workspace    = true;
 sett.write.affine       = true;
 sett.write.vel          = true;
 sett.write.mu           = [true true];
