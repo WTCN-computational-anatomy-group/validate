@@ -171,7 +171,7 @@ if strcmp(user,'mbrud-home')
     dir_data = '/home/smajjk/Data/Nii/diffeo-segment/';
     dir_res  = '/home/smajjk/Data/Results/diffeo-segment';
 elseif strcmp(user,'mbrud-fil')    
-    addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment-new')
+    addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')
     addpath('/home/mbrud/dev/mbrud/code/matlab/auxiliary-functions')
     dir_data = '/scratch/Nii/TrainingData/diffeo-segment/';
     dir_res  = '/scratch/Results/diffeo-segment';
