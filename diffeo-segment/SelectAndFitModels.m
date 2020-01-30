@@ -68,7 +68,9 @@ if ~isfield(opt,'numsubj'), opt.numsubj = Inf; end
 % Model 3 | Labels are used (K1=7, mg_ix=2), trying to get nice GM, WM and CSF
 % Model 4 | Fit T1 (use to init) and CT (K1=12), unsupervised
 % Model 5 | Fit a learned model to new subjects
-if ~isfield(opt,'models'), opt.models = 0; end        
+if ~isfield(opt,'models'), opt.models = 0; end     
+% Number of parfor workers
+if ~isfield(opt,'nw'),     opt.nw = 0; end   
 
 %%%%%%%%%%%%%%%%%%%
 % Set/get user specific
