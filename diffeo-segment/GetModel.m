@@ -209,7 +209,7 @@ if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_nu
 
 % Define training population
 ix_pop = ix.IXI;
-N      = 200;    % Set maximum number of subjects
+N      = 100;    % Set maximum number of subjects
 N      = min(N,numsubj); 
 
 % Number of template classes
