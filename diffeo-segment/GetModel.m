@@ -58,8 +58,9 @@ sett.model.mg_ix        = 1;
 sett.labels.use         = false; 
 sett.model.K            = K;  
 sett.show.mx_subjects   = 2;
-sett.var.v_settings     = [1e-4 0 0.2 0.05 0.2]*2;     
-sett.model.init_mu_dm   = 16;  
+% sett.var.v_settings     = [1e-4 0 0.2 0.05 0.2]*4;     
+% sett.model.init_mu_dm   = 4;
+% sett.nit.zm             = 3;
 sett.do.updt_vel        = true;
 sett.do.updt_aff        = true;
 sett.do.updt_int        = true;
@@ -120,8 +121,8 @@ end
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs    = [ix.IXI  ix.MICCAI2012 ix.BALGRIST];
-N      = [150 20 10]; % Set maximum number of subjects
+ixs    = [ix.IXI  ix.MICCAI2012 ix.BALGRIST ix.MADRID];
+N      = [150 20 10 16]; % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
@@ -138,7 +139,7 @@ end
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations'};
-sett.show.mx_subjects   = 2;
+sett.show.mx_subjects   = 4;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
