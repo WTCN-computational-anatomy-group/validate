@@ -139,7 +139,7 @@ end
 % Settings
 sett                    = struct;
 sett.show.figs          = {'model','segmentations','intensity'};
-sett.show.mx_subjects   = 4;
+sett.show.mx_subjects   = 2;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
