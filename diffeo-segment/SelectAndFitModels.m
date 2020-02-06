@@ -4,22 +4,25 @@ function SelectAndFitModels(opt)
 % EXAMPLE
 % -------------------------------------------------------------------------
 %
-% - SelectAndFitModels(struct('user','mbrud-home','models',4,'ax2d','sag','numsubj',4))
+% - SelectAndFitModels(struct('user','mbrud-home','models',4,'run3d',false,'ax2d','sag','numsubj',4))
+%
+% -------------------------------------------------------------------------
+% TODO
+% -------------------------------------------------------------------------
+% [ ] profile Register
+% [ ] tissue prop
+% [ ] Use binning uncertainity instead of jiter? Worth it? Slower right?
 %
 % -------------------------------------------------------------------------
 % QUESTIONS
 % -------------------------------------------------------------------------
-% [ ] Add tissue proportion? Less details in deformations?
-% [ ] Use binning uncertainity instead of jiter? Worth it? Slower right?
-% [ ] For register, use maffreg?
-% [ ] OK use of InitGMM?
+% [ ]
 %
 % -------------------------------------------------------------------------
 % EXTRA
 % -------------------------------------------------------------------------
 % [ ] Investigate regularisation and iteration settings
 % [ ] Work on nii.gz? (see: https://uk.mathworks.com/matlabcentral/fileexchange/47698-savezip)
-% [ ] Make better 2D data, in all axes..
 %
 % -------------------------------------------------------------------------
 % VALIDATION

@@ -121,8 +121,8 @@ end
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs    = [ix.IXI  ix.MICCAI2012 ix.BALGRIST ix.MADRID];
-N      = [150 20 10 16]; % Set maximum number of subjects
+ixs    = [ix.IXI];%  ix.MICCAI2012 ix.BALGRIST ix.MADRID];
+N      = [200];% 20 10 16]; % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
@@ -138,7 +138,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+sett.show.figs          = {'model','segmentations','intensity'};
 sett.show.mx_subjects   = 4;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
