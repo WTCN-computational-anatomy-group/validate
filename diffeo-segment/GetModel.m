@@ -2,9 +2,9 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % MODELS:
 % 0. Testing
 % 1. Template prop MICCAI2012+MRBRAINS18, (K1=12), get CGM, SGM, WM, CSF, VEN
-% 2. Fit T1w (K1=12)
+% 2. Fit T1w (K1=14)
 % 3. Template prop MRBRAINS18, (K1=8), get GM, WM, CSF
-% 4. Fit IXI T1w,T2w,PDw (K1=12)
+% 4. Fit T1w,T2w,PDw (K1=12)
 % 5. CROMIS (K1=12)
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -116,17 +116,17 @@ sett.model.crop_mu      = true;
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 2 | Fit T1w (K1=12)
+% Model 2 | Fit T1w (K1=14)
 %------------------
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs    = [ix.IXI ix.BALGRIST];
-N      = [131 19];
-N      = min(N,numsubj);
+ixs = [ix.IXI ix.BALGRIST];
+N   = [81 19];
+N   = min(N,numsubj);
 
 % Number of template classes
-K = 11; K1 = K + 1;
+K = 13; K1 = K + 1;
 
 % Define training population
 P1 = P(ixs);
@@ -205,13 +205,13 @@ if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % cl
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 4 | Fit IXI T1w,T2w,PDw (K1=12)
+% Model 4 | Fit T1w,T2w,PDw (K1=12)
 %------------------
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Define training population
-ix_pop = ix.IXI;
-N      = 100;    % Set maximum number of subjects
+ix_pop = [ix.IXI ix.BALGRIST];
+N      = [131 19];    % Set maximum number of subjects
 N      = min(N,numsubj); 
 
 % Number of template classes
@@ -220,7 +220,7 @@ K = 11; K1 = K + 1;
 P1 = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p);
-    P1{p}{4} = 1;  
+    P1{p}{4} = p;  
 end
 P1{1}{2} = {'T1','T2','PD'};
 
@@ -237,6 +237,7 @@ sett.write.mu           = [true true];
 sett.labels.use         = false; 
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
+sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
