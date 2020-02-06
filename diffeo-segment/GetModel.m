@@ -2,7 +2,7 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % MODELS:
 % 0. Testing
 % 1. Template prop MICCAI2012+MRBRAINS18, (K1=12), get CGM, SGM, WM, CSF, VEN
-% 2. Fit T1w (K1=14)
+% 2. Fit T1w (K1=12)
 % 3. Template prop MRBRAINS18, (K1=8), get GM, WM, CSF
 % 4. Fit T1w,T2w,PDw (K1=12)
 % 5. CROMIS (K1=12)
@@ -116,17 +116,17 @@ sett.model.crop_mu      = true;
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 2 | Fit T1w (K1=14)
+% Model 2 | Fit T1w (K1=12)
 %------------------
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs = [ix.IXI ix.BALGRIST];
-N   = [81 19];
+ixs = [ix.IXI ix.BALGRIST ix.MADRID];
+N   = [81 19 16];
 N   = min(N,numsubj);
 
 % Number of template classes
-K = 13; K1 = K + 1;
+K = 11; K1 = K + 1;
 
 % Define training population
 P1 = P(ixs);
