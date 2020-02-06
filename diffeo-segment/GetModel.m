@@ -121,8 +121,8 @@ end
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs    = [ix.IXI];%  ix.MICCAI2012 ix.BALGRIST ix.MADRID];
-N      = [200];% 20 10 16]; % Set maximum number of subjects
+ixs    = [ix.IXI ix.BALGRIST];
+N      = [131 19];
 N      = min(N,numsubj);
 
 % Number of template classes
@@ -149,6 +149,7 @@ sett.write.vel          = true;
 sett.write.mu           = [true true];
 sett.labels.use         = false; 
 sett.model.K            = K;  
+sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
