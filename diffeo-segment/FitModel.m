@@ -194,7 +194,14 @@ for p=1:Npop % loop over populations
         otherwise            
             error('Unknown population!')
     end
+   
+    % Shuffle images and labels
+    rng('default'); rng(1);
+    rix = randperm(size(pths_im{1},1));
+    for c=1:C,             pths_im{c} = pths_im{c}(rix,:); end
+    if ~isempty(pths_lab), pths_lab   = pths_lab(rix,:); end
     
+    % Change number of subjects
     if iscell(Nsubj)
         for c=1:C,        pths_im{c} = pths_im{c}(cell2mat(Nsubj),:); end
         if ~isempty(pths_lab), pths_lab = pths_lab(cell2mat(Nsubj),:); end
@@ -202,7 +209,7 @@ for p=1:Npop % loop over populations
         for c=1:C,        pths_im{c} = pths_im{c}(1:min(Nsubj,size(pths_im{c},1)),:); end
         if ~isempty(pths_lab), pths_lab = pths_lab(1:min(Nsubj,size(pths_lab,1)),:); end
     end
-    
+               
     % Set images and labels
     dat(p).pths_im  = pths_im;
     dat(p).pths_lab = pths_lab;
