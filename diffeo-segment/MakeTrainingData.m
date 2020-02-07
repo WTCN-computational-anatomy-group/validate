@@ -19,7 +19,7 @@ function MakeTrainingData
 %
 %__________________________________________________________________________
 
-addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/');
+addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/'); % https://github.com/WTCN-computational-anatomy-group/Patient-Preprocessing 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Global settings
