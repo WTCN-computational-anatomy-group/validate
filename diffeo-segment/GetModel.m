@@ -121,8 +121,8 @@ end
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs = [ix.IXI ix.BALGRIST ix.MADRID];
-N   = [85 19 16];
+ixs = [ix.IXI ix.BALGRIST ix.MADRID ix.MICCAI2012];
+N   = [85 19 16 20];
 N   = min(N,numsubj);
 
 % Number of template classes
