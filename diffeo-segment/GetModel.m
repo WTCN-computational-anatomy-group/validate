@@ -57,7 +57,7 @@ sett.write.mu           = [true true];
 sett.model.mg_ix        = 1;
 sett.labels.use         = false; 
 sett.model.K            = K;  
-sett.show.mx_subjects   = 2;
+sett.show.mx_subjects   = 8;
 % sett.var.v_settings     = [1e-4 0 0.2 0.05 0.2]*4;     
 % sett.model.init_mu_dm   = 4;
 % sett.nit.zm             = 3;
@@ -111,7 +111,7 @@ sett.labels.use         = true;
 sett.model.K            = K;  
 sett.model.mg_ix        = 1;
 sett.model.ix_init_pop  = 1;   
-sett.show.mx_subjects   = 2;
+sett.show.mx_subjects   = 8;
 sett.model.crop_mu      = true;
 end
 
@@ -138,8 +138,8 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity'};
-sett.show.mx_subjects   = 2;
+sett.show.figs          = {'model','segmentations','intensity','parameters'};
+sett.show.mx_subjects   = 8;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -198,7 +198,7 @@ sett.write.mu           = [true true];
 sett.labels.use         = true; 
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
-sett.show.mx_subjects   = 2;
+sett.show.mx_subjects   = 8;
 sett.model.mg_ix        = 1;%[1 2 3 3 4 4 4 5 5 5 6 6 6];
 sett.model.crop_mu      = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
@@ -210,9 +210,10 @@ end
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Define training population
-ix_pop = [ix.IXI ix.BALGRIST];
-N      = [131 19];    % Set maximum number of subjects
-N      = min(N,numsubj); 
+ix_pop  = [ix.BALGRIST ix.IXI ix.MADRID ix.MICCAI2012 ix.MRBRAINS18];
+N       = [32 32 32 32 32];
+N       = min(N,numsubj); 
+int_pop = [1 2 3 3 3];
 
 % Number of template classes
 K = 11; K1 = K + 1;
@@ -220,9 +221,9 @@ K = 11; K1 = K + 1;
 P1 = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p);
-    P1{p}{4} = p;  
+    P1{p}{4} = int_pop(p);  
 end
-P1{1}{2} = {'T1','T2','PD'};
+P1{2}{2} = {'T1','T2','PD'};
 
 % Settings
 sett                    = struct;
@@ -237,7 +238,7 @@ sett.write.mu           = [true true];
 sett.labels.use         = false; 
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
-sett.model.crop_mu      = true;
+sett.model.crop_mu      = false;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -280,7 +281,7 @@ sett.model.mg_ix        = 1;
 sett.labels.use         = false; 
 sett.labels.use_initgmm = false;
 sett.model.K            = K;  
-sett.show.mx_subjects   = 4;
+sett.show.mx_subjects   = 8;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 

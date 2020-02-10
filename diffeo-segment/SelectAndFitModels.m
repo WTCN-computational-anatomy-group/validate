@@ -11,7 +11,7 @@ function SelectAndFitModels(opt)
 % -------------------------------------------------------------------------
 % [ ] profile Register
 % [ ] tissue prop
-% [ ] Use binning uncertainity instead of jiter? Worth it? Slower right?
+% [ ] Use binning uncertainity instead of jitter? Worth it? Slower right?
 %
 % -------------------------------------------------------------------------
 % QUESTIONS
