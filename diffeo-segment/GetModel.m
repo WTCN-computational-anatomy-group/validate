@@ -15,6 +15,7 @@ numsubj = opt.numsubj;
 run3d   = opt.run3d;
 ax2d    = opt.ax2d;
 nw      = opt.nw;
+showfig = opt.show;
 
 model = [];
 P1    = {};
@@ -50,7 +51,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
+if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -100,7 +101,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity'};
+if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -139,7 +140,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity','InitGMM'};
+if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
 sett.show.mx_subjects   = 8;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
@@ -188,7 +189,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
+if showfig, sett.show.figs = {'model','segmentations'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -212,7 +213,7 @@ if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_nu
 
 % Define training population
 ix_pop  = [ix.BALGRIST ix.IXI ix.MICCAI2012 ix.MRBRAINS18 ix.CTHEALTHY];
-N       = [Inf 50 Inf Inf 50];
+N       = [Inf 200 Inf Inf Inf];
 N       = min(N,numsubj); 
 int_pop = [1 2 3 3 4];
 
@@ -236,8 +237,8 @@ P1{2}{2} = {'T1','T2','PD'};
 
 % Settings
 sett                    = struct;
-% sett.show.figs          = {'model','segmentations'};
-sett.gen.num_workers    = 48;
+if showfig, sett.show.figs = {'model','segmentations'}; end
+sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.df           = true;
@@ -276,7 +277,7 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','InitGMM','intensity','parameters'};
+if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -310,7 +311,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                  = struct;
-sett.show.figs        = {'model','segmentations','intensity','parameters','InitGMM'};
+if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity','parameters'}; end
 sett.show.mx_subjects = 8;
 sett.gen.num_workers  = nw;
 sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
@@ -340,7 +341,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                  = struct;
-sett.show.figs        = {'model','segmentations','intensity','parameters','InitGMM'};
+if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity','parameters'}; end
 sett.show.mx_subjects = 8;
 sett.gen.num_workers  = nw;
 sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);

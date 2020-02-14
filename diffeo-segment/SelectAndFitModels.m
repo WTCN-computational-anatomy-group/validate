@@ -78,6 +78,8 @@ if ~isfield(opt,'numsubj'), opt.numsubj = Inf; end
 if ~isfield(opt,'models'), opt.models = 0; end     
 % Number of parfor workers
 if ~isfield(opt,'nw'),     opt.nw = 0; end   
+% Show figures
+if ~isfield(opt,'show'),   opt.show = true; end   
 
 %%%%%%%%%%%%%%%%%%%
 % Set/get user specific
