@@ -6,6 +6,8 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % 3. Template prop MRBRAINS18, (K1=8), get GM, WM, CSF
 % 4. Fit T1w,T2w,PDw (K1=12)
 % 5. CROMIS (K1=12)
+% 6. MICCAI2020 (IBSR18)
+% 7. MICCAI2020 (LBPA40)
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
@@ -105,14 +107,13 @@ if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
 sett.write.mu           = [true true];
 sett.write.workspace    = true;
-sett.write.affine       = true;
-sett.write.vel          = true;
+sett.write.df           = true;
 sett.labels.use         = true; 
 sett.model.K            = K;  
 sett.model.mg_ix        = 1;
 sett.model.ix_init_pop  = 1;   
 sett.show.mx_subjects   = 8;
-sett.model.crop_mu      = true;
+sett.model.crop_mu      = false;
 end
 
 %%%%%%%%%%%%%%%%%%%
@@ -122,7 +123,7 @@ if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_nu
 
 % Set training populations to use
 ixs = [ix.IXI ix.BALGRIST ix.MADRID ix.MICCAI2012];
-N   = [85 19 16 20];
+N   = [50 Inf Inf Inf];
 N   = min(N,numsubj);
 
 % Number of template classes
@@ -138,18 +139,18 @@ end
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations','intensity','parameters'};
+sett.show.figs          = {'model','segmentations','intensity','InitGMM'};
 sett.show.mx_subjects   = 8;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.workspace    = true;
-sett.write.affine       = true;
-sett.write.vel          = true;
 sett.write.mu           = [true true];
+sett.write.df           = true;
 sett.labels.use         = false; 
 sett.model.K            = K;  
-sett.model.crop_mu      = true;
+sett.model.crop_mu      = false;
+sett.model.init_mu_dm   = 16;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -200,7 +201,7 @@ sett.model.K            = K;
 sett.model.ix_init_pop  = 1;
 sett.show.mx_subjects   = 8;
 sett.model.mg_ix        = 1;%[1 2 3 3 4 4 4 5 5 5 6 6 6];
-sett.model.crop_mu      = true;
+sett.model.crop_mu      = false;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory 
 end
 
@@ -210,18 +211,26 @@ end
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Define training population
-ix_pop  = [ix.BALGRIST ix.IXI ix.MADRID ix.MICCAI2012 ix.MRBRAINS18];
-N       = [32 32 32 32 32];
+ix_pop  = [ix.BALGRIST ix.IXI ix.MICCAI2012 ix.MRBRAINS18 ix.CTHEALTHY];
+N       = [Inf 50 Inf Inf 50];
 N       = min(N,numsubj); 
-int_pop = [1 2 3 3 3];
+int_pop = [1 2 3 3 4];
 
 % Number of template classes
 K = 11; K1 = K + 1;
 
+igm = 12; iwm = 9; icsf = 11;
+cm_map = {{[igm iwm],1:K1},... 1.spn
+          {}, ...
+          {igm,igm,[igm iwm],iwm,icsf,icsf,1:K1}, ... % 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven 
+          {igm,igm,[igm iwm],iwm,[igm iwm],icsf,icsf,1:K1}, ...  % 1.cgm,2.sgm,3.spn,4.wm,5.cer,6.csf,7.ven                                    
+          {}};
+      
 P1 = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p);
     P1{p}{4} = int_pop(p);  
+    P1{p}{5} = cm_map{p};
 end
 P1{2}{2} = {'T1','T2','PD'};
 
@@ -231,11 +240,10 @@ sett.show.figs          = {'model','segmentations'};
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.write.workspace    = true;
-sett.write.affine       = true;
-sett.write.vel          = true;
+sett.write.df           = true;
 sett.write.mu           = [true true];
-sett.labels.use         = false; 
+sett.labels.use         = true; 
+sett.labels.use_initgmm = false;
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
 sett.model.crop_mu      = false;
@@ -273,8 +281,7 @@ sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.workspace    = true;
-sett.write.affine       = true;
-sett.write.vel          = true;
+sett.write.df           = true;
 sett.write.mu           = [true true];
 sett.write.tc           = [false true false]; 
 sett.model.mg_ix        = 1;
@@ -283,6 +290,66 @@ sett.labels.use_initgmm = false;
 sett.model.K            = K;  
 sett.show.mx_subjects   = 8;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
+end
+
+%%%%%%%%%%%%%%%%%%%
+% Model 6 | MICCAI2020 (IBSR18)
+%------------------
+if model_num == 6, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
+% Set training populations to use
+ixs = ix.IBSR18;
+N   = 18;
+N   = min(N,numsubj);
+
+% Number of template classes
+K = 11; K1 = K + 1;
+
+% Define training population
+P1       = P(ixs);   
+P1{1}{3} = N;
+
+% Settings
+sett                  = struct;
+sett.show.figs        = {'model','segmentations','intensity','parameters','InitGMM'};
+sett.show.mx_subjects = 8;
+sett.gen.num_workers  = nw;
+sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
+if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+sett.write.df         = true;
+sett.write.mu         = [true true];
+sett.model.K          = K;
+sett.model.init_mu_dm = 8;
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
+end
+
+%%%%%%%%%%%%%%%%%%%
+% Model 7 | MICCAI2020 (LBPA40)
+%------------------
+if model_num == 7, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
+% Set training populations to use
+ixs = ix.LBPA40;
+N   = 40;
+N   = min(N,numsubj);
+
+% Number of template classes
+K = 11; K1 = K + 1;
+
+% Define training population
+P1       = P(ixs);   
+P1{1}{3} = N;
+
+% Settings
+sett                  = struct;
+sett.show.figs        = {'model','segmentations','intensity','parameters','InitGMM'};
+sett.show.mx_subjects = 8;
+sett.gen.num_workers  = nw;
+sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
+if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+sett.write.df         = true;
+sett.write.mu         = [true true];
+sett.model.K          = K;
+sett.model.init_mu_dm = 8;
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
 end
 
 end

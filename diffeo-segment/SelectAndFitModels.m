@@ -48,6 +48,9 @@ function SelectAndFitModels(opt)
 % 11  | ROB          | CT           | n/a                                      | 72    
 % 12  | MPMCOMPLIANT | MPM          | n/a                                      | 10
 % 13  | MADRID       | T1           | n/a                                      | 16
+% 14  | IBSR18       | T1           | n/a                                      | 18
+% 15  | CTHEALTHY    | CT           | n/a                                      | 50
+% 16  | LPBA40       | T1           | n/a                                      | 40
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -142,7 +145,8 @@ end
 
 ix = struct('ATLAS',1,'BALGRIST',2,'CROMIS',3,'CROMISLABELS',4,'DELIRIUM',5, ...
             'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10,'ROB',11, ...
-            'MPMCOMPLIANT',12,'MADRID',13);
+            'MPMCOMPLIANT',12,'MADRID',13,'IBSR18',14,'CTHEALTHY',15, ...
+            'LPBA40',16);
 P  = cell(1,numel(ix));
 
 % Populations of images (GMM will be fitted)
@@ -157,6 +161,9 @@ P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),   {'T1'}, Inf, [], {
 P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),          {'CT'}, Inf, [], {}, true, true, false};
 P{ix.MPMCOMPLIANT} = {fullfile(dir_data,d_2D,'MPMCOMPLIANT'), {'MT','PD','R2','T1'}, Inf, [], {}, false, true, true};
 P{ix.MADRID}       = {fullfile(dir_data,d_2D,'MADRID'),       {'T1'}, Inf, [], {}, false, true, true};
+P{ix.IBSR18}       = {fullfile(dir_data,d_2D,'IBSR18'),       {'T1'}, Inf, [], {}, false, true, true};
+P{ix.CTHEALTHY}    = {fullfile(dir_data,d_2D,'CTHEALTHY'),    {'CT'}, Inf, [], {}, true, true, false};
+P{ix.LPBA40}       = {fullfile(dir_data,d_2D,'LPBA40'),       {'T1'}, Inf, [], {}, false, true, true};
 
 % Populations of tissue segmentations (2D not available)
 P{ix.IXIC}  = {fullfile(dir_data,'IXIC'),  {'GM','WM','CSF'}, Inf, [], {}, false};
@@ -192,6 +199,11 @@ elseif strcmp(user,'yael-fil-master')
     addpath('~/Devel/computational-anatomy/diffeo-segment/');
     dir_data = '/scratch/new_segment/TrainingData';
     dir_res  = '/export/data/experiments/new_segment/200110/';
+elseif strcmp(user,'gold-fil')    
+    addpath('/scratch/gold/mikael/auxiliary-functions/');
+    addpath('/scratch/gold/mikael/diffeo-segment/');
+    dir_data = '/scratch/gold/mikael/';
+    dir_res  = '/scratch/gold/mikael/results';    
 else
     error('Undefined user!');
 end

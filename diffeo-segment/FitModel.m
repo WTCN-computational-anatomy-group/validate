@@ -151,8 +151,10 @@ for p=1:Npop % loop over populations
         case 'CROMISLABELS'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_smask).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_smask.*\.nii$');
-        case {'CROMIS','DELIRIUM','ROB','MADRID'}
+        case {'CROMIS','DELIRIUM','ROB','MADRID','CTHEALTHY'}
             pths_im{1} = spm_select('FPList',dir_data,'^.*\.nii$');
+        case {'IBSR18'}
+            pths_im{1} = spm_select('FPList',dir_data,'^((?!_parc_ana).)*\.img$');
         case {'IXI','IXIMISALIGN'}
             for c=1:C
                 pths_im{c} = spm_select('FPList',dir_data,['-' modality{c} '-.*\.nii$']);                                
@@ -171,6 +173,8 @@ for p=1:Npop % loop over populations
                     pths_im{i}       = spm_select('FPList',dir_data,['^rc' map(modality{i}) '.*\.nii$']);                     
                 end
             end   
+        case {'LPBA40'}
+            pths_im{1} = spm_select('FPListRec',dir_data,'^((?!label).)*\.img$');
         case 'MICCAI2012'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_glm).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_glm.*\.nii$');
