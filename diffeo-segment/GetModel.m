@@ -236,8 +236,8 @@ P1{2}{2} = {'T1','T2','PD'};
 
 % Settings
 sett                    = struct;
-sett.show.figs          = {'model','segmentations'};
-sett.gen.num_workers    = nw;
+% sett.show.figs          = {'model','segmentations'};
+sett.gen.num_workers    = 48;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.df           = true;
