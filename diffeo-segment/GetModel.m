@@ -51,7 +51,7 @@ end
 
 % Settings
 sett                    = struct;
-if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
+if showfig, sett.show.figs = {'model','segmentations','init','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -101,7 +101,7 @@ end
 
 % Settings
 sett                    = struct;
-if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
+if showfig, sett.show.figs = {'model','segmentations','init','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -140,7 +140,7 @@ end
 
 % Settings
 sett                    = struct;
-if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
+if showfig, sett.show.figs = {'model','segmentations','init','intensity'}; end
 sett.show.mx_subjects   = 8;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
@@ -248,6 +248,7 @@ sett.labels.use_initgmm = false;
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
 sett.model.crop_mu      = false;
+sett.nit.init           = 12;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -277,7 +278,7 @@ end
 
 % Settings
 sett                    = struct;
-if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity'}; end
+if showfig, sett.show.figs = {'model','segmentations','init','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -311,7 +312,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                  = struct;
-if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity','parameters'}; end
+if showfig, sett.show.figs = {'model','segmentations','init','intensity','parameters'}; end
 sett.show.mx_subjects = 8;
 sett.gen.num_workers  = nw;
 sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
@@ -341,7 +342,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                  = struct;
-if showfig, sett.show.figs = {'model','segmentations','InitGMM','intensity','parameters'}; end
+if showfig, sett.show.figs = {'model','segmentations','init','intensity','parameters'}; end
 sett.show.mx_subjects = 8;
 sett.gen.num_workers  = nw;
 sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
