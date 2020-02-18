@@ -4,7 +4,7 @@ function SelectAndFitModels(opt)
 % EXAMPLE
 % -------------------------------------------------------------------------
 %
-% - SelectAndFitModels(struct('user','mbrud-home','models',4,'run3d',false,'ax2d','sag','numsubj',4))
+% - SelectAndFitModels(struct('user','mbrud-fil','models',0,'run3d',false,'ax2d','ax','numsubj',4,'nw',-1))
 %
 % -------------------------------------------------------------------------
 % TODO

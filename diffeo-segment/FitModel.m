@@ -30,9 +30,13 @@ end
 in  = dat2in(dat); 
 clear dat
 
-% If SPM has been compiled with OpenMP support then the number of threads
-% can here be set to speed up the algorithm.
-setenv('SPM_NUM_THREADS',sprintf('%d',-1));
+if isfield(sett,'gen') && isfield(sett.gen,'num_workers') && sett.gen.num_workers == 0
+    % If SPM has been compiled with OpenMP support then the number of threads
+    % are here set to speed up the algorithm.
+    setenv('SPM_NUM_THREADS',sprintf('%d',-1));
+else
+    setenv('SPM_NUM_THREADS',sprintf('%d',0));
+end
 
 if do_gw
     % Run Groupwise
