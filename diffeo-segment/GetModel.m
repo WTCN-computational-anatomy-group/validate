@@ -51,7 +51,7 @@ end
 
 % Settings
 sett                    = struct;
-if showfig, sett.show.figs = {'model','segmentations','init','intensity'}; end
+if showfig, sett.show.figs = {'model','segmentations'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -123,8 +123,8 @@ end
 if model_num == 2, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Set training populations to use
-ixs = [ix.IXI ix.BALGRIST ix.MADRID ix.MICCAI2012];
-N   = [Inf Inf Inf Inf];
+ixs = [ix.IXI ix.BALGRIST ix.MADRID ix.MICCAI2012 ix.MRBRAINS18];
+N   = [200 Inf Inf Inf Inf];
 N   = min(N,numsubj);
 
 % Number of template classes
@@ -313,7 +313,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                  = struct;
-if showfig, sett.show.figs = {'model','segmentations','init','intensity','parameters'}; end
+if showfig, sett.show.figs = {'model','segmentations'}; end
 sett.show.mx_subjects = 8;
 sett.gen.num_workers  = nw;
 sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
@@ -322,6 +322,7 @@ sett.write.df         = true;
 sett.write.mu         = [true true];
 sett.model.K          = K;
 sett.model.init_mu_dm = 8;
+sett.var.v_settings   = [0 0 0.2 0.05 0.2]*2;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
 end
 
@@ -343,7 +344,7 @@ P1{1}{3} = N;
 
 % Settings
 sett                  = struct;
-if showfig, sett.show.figs = {'model','segmentations','init','intensity','parameters'}; end
+if showfig, sett.show.figs = {'model','segmentations'}; end
 sett.show.mx_subjects = 8;
 sett.gen.num_workers  = nw;
 sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)]);
@@ -352,6 +353,7 @@ sett.write.df         = true;
 sett.write.mu         = [true true];
 sett.model.K          = K;
 sett.model.init_mu_dm = 8;
+sett.var.v_settings   = [0 0 0.2 0.05 0.2]*4;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
 end
 
