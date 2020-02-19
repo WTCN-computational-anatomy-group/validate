@@ -7,7 +7,7 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % 4. Fit T1w,T2w,PDw (K1=12)
 % 5. CROMIS (K1=12)
 % 6. MICCAI2020 (IBSR18)
-% 7. MICCAI2020 (LBPA40)
+% 7. MICCAI2020 (LPBA40)
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
@@ -327,11 +327,11 @@ if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % cl
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 7 | MICCAI2020 (LBPA40)
+% Model 7 | MICCAI2020 (LPBA40)
 %------------------
 if model_num == 7, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 % Set training populations to use
-ixs = ix.LBPA40;
+ixs = ix.LPBA40;
 N   = 40;
 N   = min(N,numsubj);
 
