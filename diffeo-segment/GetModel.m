@@ -151,8 +151,9 @@ sett.write.df           = true;
 sett.labels.use         = false; 
 sett.model.K            = K;  
 sett.model.crop_mu      = false;
-sett.model.init_mu_dm   = 16;
+sett.model.init_mu_dm   = 8;
 sett.nit.init           = 12;
+sett.var.v_settings     = [0 0 0.2 0.05 0.2]*2;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
@@ -353,7 +354,7 @@ sett.write.df         = true;
 sett.write.mu         = [true true];
 sett.model.K          = K;
 sett.model.init_mu_dm = 8;
-sett.var.v_settings   = [0 0 0.2 0.05 0.2]*4;
+sett.var.v_settings   = [0 0 0.2 0.05 0.2]*2;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
 end
 
