@@ -89,16 +89,16 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BALGRIST
 %-------------------------------------
 Population = 'BALGRIST';
-if Do.BALGRIST
+if Do.(Population)
     fprintf('======================================\n')
     fprintf('| %s\n',Population);
     fprintf('======================================\n')
@@ -140,9 +140,9 @@ if Do.BALGRIST
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -183,9 +183,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -229,9 +229,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -273,9 +273,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -321,9 +321,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -363,9 +363,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -414,9 +414,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers <= 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -459,9 +459,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -511,9 +511,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -556,9 +556,9 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -598,8 +598,8 @@ if Do.(Population)
     end
     opt.do.go2native = false;  
     if NumWorkers == 1 || S0 == 1
-        for s=1:numel(dat), out = RunPreproc(dat(s).Nii,opt); end
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
     else
-        parfor(s=1:numel(dat),NumWorkers), out = RunPreproc(dat(s).Nii,opt); end
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
     end
 end
