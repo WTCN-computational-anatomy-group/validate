@@ -210,6 +210,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%
 % Model 4 | Fit T1w,T2w,PDw (K1=12)
+% Less classes? Two CSF. Bone labelled from CT.
 %------------------
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
@@ -251,6 +252,7 @@ sett.model.K            = K;
 sett.model.ix_init_pop  = 1;
 sett.model.crop_mu      = false;
 sett.nit.init           = 12;
+sett.var.v_settings     = [0 0 0.2 0.05 0.2]*4;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
