@@ -36,6 +36,8 @@ if isfield(sett,'gen') && isfield(sett.gen,'num_workers') && sett.gen.num_worker
     setenv('SPM_NUM_THREADS',sprintf('%d',-1));
 else
     setenv('SPM_NUM_THREADS',sprintf('%d',0));
+    par_info = parcluster('local');
+    parpool('local',min(par_info.NumWorkers,sett.gen.num_workers));
 end
 
 if do_gw
