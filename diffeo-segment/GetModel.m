@@ -367,7 +367,7 @@ end
 if model_num == 8, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 % Set training populations to use
 ixs = ix.MICCAI2012;
-N   = 35;
+N   = 20;
 N   = min(N,numsubj);
 
 % Number of template classes
@@ -377,7 +377,7 @@ K = 11; K1 = K + 1;
 P1       = P(ixs);   
 P1{1}{3} = N;
 
-for scl=[1 1.5 2 2.5 3 4]
+for scl=[1 1.5 2 2.5 3 3.5 4]
     % Settings
     sett                  = struct;
     if showfig, sett.show.figs = {'model','segmentations'}; end
