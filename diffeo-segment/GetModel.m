@@ -377,23 +377,23 @@ K = 11; K1 = K + 1;
 P1       = P(ixs);   
 P1{1}{3} = N;
 
-for scl=[1 1.5 2 2.5 3 3.5 4]
-    % Settings
-    sett                  = struct;
-    if showfig, sett.show.figs = {'model','segmentations'}; end
-    sett.show.mx_subjects = 8;
-    sett.gen.num_workers  = nw;
-    sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)],num2str(scl));
-    if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-    sett.write.df         = true;
-    sett.write.mu         = [true true];
-    sett.model.K          = K;
-    sett.model.init_mu_dm = 8;
-    sett.var.v_settings   = [0 0 0.2 0.05 0.2]*scl;
-    sett.nit.init         = 12;
-    if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
-end
-end
+% Vel regularisation scaling
+scl = 1;
 
+% Settings
+sett                  = struct;
+if showfig, sett.show.figs = {'model','segmentations'}; end
+sett.show.mx_subjects = 8;
+sett.gen.num_workers  = nw;
+sett.write.dir_res    = fullfile(dir_res,['results/model-' num2str(model_num)],num2str(scl));
+if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
+sett.write.df         = true;
+sett.write.mu         = [true true];
+sett.model.K          = K;
+sett.model.init_mu_dm = 8;
+sett.var.v_settings   = [0 0 0.2 0.05 0.2]*scl;
+sett.nit.init         = 12;
+if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory    
+end
 end
 %==========================================================================
