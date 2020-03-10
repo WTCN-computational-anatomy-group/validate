@@ -202,9 +202,9 @@ elseif strcmp(user,'yael-fil-master')
     dir_data = '/scratch/new_segment/TrainingData';
     dir_res  = '/export/data/experiments/new_segment/200110/';
 elseif strcmp(user,'gold-fil')    
-    addpath('/scratch/gold/mikael/auxiliary-functions/');
-    addpath('/scratch/gold/mikael/diffeo-segment/');
-    dir_data = '/scratch/gold/mikael/';
+    addpath('/scratch/gold/mikael/code/auxiliary-functions/');
+    addpath('/scratch/gold/mikael/code/diffeo-segment/');
+    dir_data = '/scratch/gold/mikael/data';
     dir_res  = '/scratch/gold/mikael/results';    
 else
     error('Undefined user!');
