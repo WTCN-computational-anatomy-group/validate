@@ -49,7 +49,7 @@ function SelectAndFitModels(opt)
 % 12  | MPMCOMPLIANT | MPM          | n/a                                      | 10
 % 13  | MADRID       | T1           | n/a                                      | 16
 % 14  | IBSR18       | T1           | n/a                                      | 18
-% 15  | CTHEALTHY    | CT           | n/a                                      | 50
+% 15  | CTHEALTHY    | CT           | 1.bg,2.bone                              | 50
 % 16  | LPBA40       | T1           | n/a                                      | 40
 %
 %__________________________________________________________________________
