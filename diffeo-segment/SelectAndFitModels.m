@@ -37,7 +37,7 @@ function SelectAndFitModels(opt)
 % -------------------------------------------------------------------------
 % 1   | ATLAS        | T1           | 1.les                                    | 142     
 % 2   | BALGRIST     | T1,PD        | 1.spn                                    | 19      
-% 3   | CROMIS       | CT           | n/a                                      | 686     
+% 3   | CROMIS       | CT           | 1.bg,2.bone                              | 686     
 % 4   | CROMISLABELS | CT           | 1.les,2.cal                              | 60      
 % 5   | DELIRIUM     | CT           | n/a                                      | 1,025   
 % 6   | IXI          | T1,T2,PD,MRA | n/a                                      | 567     

@@ -157,8 +157,11 @@ for p=1:Npop % loop over populations
         case 'CROMISLABELS'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_smask).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_smask.*\.nii$');
-        case {'CROMIS','DELIRIUM','ROB','MADRID','CTHEALTHY'}
+        case {'DELIRIUM','ROB','MADRID'}
             pths_im{1} = spm_select('FPList',dir_data,'^.*\.nii$');
+        case {'CROMIS','CTHEALTHY'}
+            pths_im{1} = spm_select('FPList',dir_data,'^((?!lab_).)*\.nii$');
+            pths_lab   = spm_select('FPList',dir_data,'lab_.*\.nii$');            
         case {'IBSR18'}
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_parc_ana).)*\.img$');
         case {'IXI','IXIMISALIGN'}
