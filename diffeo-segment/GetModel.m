@@ -204,7 +204,7 @@ sett.nit.init           = 32;
 sett.nit.zm             = 4;
 sett.model.mg_ix        = 1;
 sett.model.init_mu_dm   = 32;
-sett.var.v_settings     = [0 0 0.2 0.05 0.2]*1.5;
+sett.var.v_settings     = [0 0 0.2 0.05 0.2]*2;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
