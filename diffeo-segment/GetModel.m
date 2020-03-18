@@ -200,11 +200,11 @@ sett.labels.use_initgmm = false;
 sett.model.K            = K;  
 sett.model.ix_init_pop  = 1;
 sett.model.crop_mu      = false;
-sett.nit.init           = 64;
+sett.nit.init           = 32;
 sett.nit.zm             = 4;
 sett.model.mg_ix        = 1;
 sett.model.init_mu_dm   = 32;
-sett.var.v_settings     = [0 0 0.2 0.05 0.2]*4;
+sett.var.v_settings     = [0 0 0.2 0.05 0.2]*1.5;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
