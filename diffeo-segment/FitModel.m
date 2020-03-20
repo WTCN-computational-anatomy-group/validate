@@ -30,20 +30,26 @@ end
 in  = dat2in(dat); 
 clear dat
 
-% If SPM has been compiled with OpenMP support then the number of threads
-% can here be set to speed up the algorithm.
-setenv('SPM_NUM_THREADS',sprintf('%d',-1));
+if isfield(sett,'gen') && isfield(sett.gen,'num_workers') && sett.gen.num_workers == 0
+    % If SPM has been compiled with OpenMP support then the number of threads
+    % are here set to speed up the algorithm.
+    setenv('SPM_NUM_THREADS',sprintf('%d',-1));
+else
+    setenv('SPM_NUM_THREADS',sprintf('%d',0));
+    %par_info = parcluster('local');
+    %parpool('local',min(par_info.NumWorkers,sett.gen.num_workers));
+end
 
 if do_gw
     % Run Groupwise
-    [dat,model,sett] = spm_mb_fit(in,'sett',sett);
+    [dat,mu,sett] = spm_mb_fit(in,'sett',sett);
 else
     % Run Register
-    [dat,model,sett] = spm_mb_fit(in,'model',model,'sett',sett);
+    [dat,mu,sett] = spm_mb_fit(in,'model',model,'sett',sett);
 end
 
 % Write results in normalised space
-spm_mb_output(dat,model,sett);
+spm_mb_output(dat,mu,sett);
 
 end
 %==========================================================================
@@ -52,7 +58,7 @@ end
 % dat2in()
 function in = dat2in(dat)
 Npop = numel(dat);
-s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[]);
+s    = struct('F',[],'do_bf',[],'ix_pop',[],'is_ct',[],'labels',[],'do_dc',[]);
 for p=1:Npop % loop over populations
     pths_im = dat(p).pths_im;
     N       = size(pths_im{1},1);
@@ -72,6 +78,7 @@ for p=1:Npop % loop over populations
             in        = s;
             in.F      = im;
             in.do_bf  = dat(p).do_bf;
+            in.do_dc  = dat(p).do_dc;
             in.ix_pop = dat(p).ix_pop;
             in.is_ct  = dat(p).is_ct;
             in.labels = lab;
@@ -79,6 +86,7 @@ for p=1:Npop % loop over populations
             ins        = s;
             ins.F      = im;
             ins.do_bf  = dat(p).do_bf;
+            ins.do_dc  = dat(p).do_dc;
             ins.ix_pop = dat(p).ix_pop;
             ins.is_ct  = dat(p).is_ct;
             ins.labels = lab;
@@ -95,11 +103,12 @@ function [dat,sett] = pop2dat(P,sett)
 
 Npop = numel(P);
 cl   = cell(Npop,1);
-dat  = struct('pths_im',cl,'pths_lab',cl,'do_bf',cl,'ix_pop',cl,'is_ct',cl,'cm_map',cl,'pop_id',cl);
+dat  = struct('pths_im',cl,'pths_lab',cl,'do_bf',cl,'ix_pop',cl,'is_ct',cl, ...
+              'do_dc',cl,'cm_map',cl,'pop_id',cl);
 for p=1:Npop % loop over populations
     
     % Defaults
-    ix_pop = []; is_ct = false; do_bf = true; cm_map = []; Nsubj = Inf;
+    ix_pop = []; is_ct = false; do_bf = true; cm_map = []; Nsubj = Inf; do_dc = true;
     
     dir_data                    = P{p}{1};
     modality                    = P{p}{2};    
@@ -108,15 +117,18 @@ for p=1:Npop % loop over populations
     if numel(P{p}) >= 5, cm_map = P{p}{5}; end
     if numel(P{p}) >= 6, is_ct  = P{p}{6}; end
     if numel(P{p}) >= 7, do_bf  = P{p}{7}; end
+    if numel(P{p}) >= 8, do_dc  = P{p}{8}; end
     
     if isempty(P{p}{4}), ix_pop = p; end
     
     dat(p).ix_pop = ix_pop;    
     dat(p).cm_map = cm_map;    
     dat(p).is_ct  = is_ct;    
-    if is_ct, dat(p).do_bf = false;
-    else,     dat(p).do_bf = do_bf;
-    end
+    dat(p).do_bf  = do_bf;    
+    dat(p).do_dc  = do_dc; 
+%     if is_ct, dat(p).do_bf = false;
+%     else,     dat(p).do_bf = do_bf;
+%     end
      
     % Get name of population (assumed to be folder name)
     name = strsplit(dir_data,filesep);
@@ -145,8 +157,13 @@ for p=1:Npop % loop over populations
         case 'CROMISLABELS'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_smask).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_smask.*\.nii$');
-        case {'CROMIS','DELIRIUM','ROB'}
+        case {'DELIRIUM','ROB','MADRID'}
             pths_im{1} = spm_select('FPList',dir_data,'^.*\.nii$');
+        case {'CROMIS','CTHEALTHY'}
+            pths_im{1} = spm_select('FPList',dir_data,'^((?!lab_).)*\.nii$');
+            pths_lab   = spm_select('FPList',dir_data,'lab_.*\.nii$');            
+        case {'IBSR18'}
+            pths_im{1} = spm_select('FPList',dir_data,'^((?!_parc_ana).)*\.img$');
         case {'IXI','IXIMISALIGN'}
             for c=1:C
                 pths_im{c} = spm_select('FPList',dir_data,['-' modality{c} '-.*\.nii$']);                                
@@ -165,9 +182,23 @@ for p=1:Npop % loop over populations
                     pths_im{i}       = spm_select('FPList',dir_data,['^rc' map(modality{i}) '.*\.nii$']);                     
                 end
             end   
+        case {'LPBA40'}
+            pths_im{1} = spm_select('FPListRec',dir_data,'^((?!label).)*\.img$');
         case 'MICCAI2012'
             pths_im{1} = spm_select('FPList',dir_data,'^((?!_glm).)*\.nii$');
             pths_lab   = spm_select('FPList',dir_data,'_glm.*\.nii$');
+        case 'MPMCOMPLIANT'
+            for c=1:C
+                if strcmp(modality{c},'MT')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!T1w|PDw|R2s).)*\.nii$');
+                elseif strcmp(modality{c},'PD')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!MTw|T1w|R2s).)*\.nii$');
+                elseif strcmp(modality{c},'R2')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!MTw|PDw|T1w).)*\.nii$');
+                elseif strcmp(modality{c},'T1')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!MTw|PDw|R2s).)*\.nii$');    
+                end
+            end                    
         case 'MRBRAINS18'       
             for c=1:C
                 pths_im{c} = spm_select('FPList',dir_data,['-' modality{c} '.*\.nii$']);
@@ -176,7 +207,14 @@ for p=1:Npop % loop over populations
         otherwise            
             error('Unknown population!')
     end
+   
+    % Shuffle images and labels
+    rng('default'); rng(1);
+    rix = randperm(size(pths_im{1},1));
+    for c=1:C,             pths_im{c} = pths_im{c}(rix,:); end
+    if ~isempty(pths_lab), pths_lab   = pths_lab(rix,:); end
     
+    % Change number of subjects
     if iscell(Nsubj)
         for c=1:C,        pths_im{c} = pths_im{c}(cell2mat(Nsubj),:); end
         if ~isempty(pths_lab), pths_lab = pths_lab(cell2mat(Nsubj),:); end
@@ -184,7 +222,7 @@ for p=1:Npop % loop over populations
         for c=1:C,        pths_im{c} = pths_im{c}(1:min(Nsubj,size(pths_im{c},1)),:); end
         if ~isempty(pths_lab), pths_lab = pths_lab(1:min(Nsubj,size(pths_lab,1)),:); end
     end
-    
+               
     % Set images and labels
     dat(p).pths_im  = pths_im;
     dat(p).pths_lab = pths_lab;
