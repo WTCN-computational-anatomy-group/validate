@@ -1,6 +1,6 @@
 clear;
 
-DO_BRAINWEB = false;
+DO_BRAINWEB = 1; % 0: not, 1: 2D, 2: 3D
 DO_RIRE     = true;
 
 if DO_BRAINWEB
@@ -17,7 +17,9 @@ if DO_BRAINWEB
     
         % Do registration             
         tic
-        [~,R] = spm_njtv_coreg(Nii2d);
+        if     DO_BRAINWEB == 1, spm_njtv_coreg(Nii2d); % Run on 2D images
+        elseif DO_BRAINWEB == 2, spm_njtv_coreg(Nii3d); % Run on 3D images
+        end
         toc
     end
 end
