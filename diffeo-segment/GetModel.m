@@ -171,7 +171,7 @@ int_pop = [1 2 3 3 4 4 5];
 % Number of template classes
 K = 12; K1 = K + 1;
 
-igm = 8; iwm = 11; icsf = 13; ibg = 2; ibn = 12;
+igm = 13; iwm = 12; icsf = 8; ibg = 2; ibn = 5;
 cm_map = {{[igm iwm],1:K1},... 1.spn 
           {}, ...
           {igm,igm,[igm iwm],iwm,icsf,icsf,1:K1}, ... % 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven  
