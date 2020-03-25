@@ -84,6 +84,6 @@
 *.Nii
 *.nii
 *.standard
-/temp
-/simulated-data
-/test-data
+coregistration-njtv/temp/
+coregistration-njtv/simulated-data/
+coregistration-njtv/test-data/
