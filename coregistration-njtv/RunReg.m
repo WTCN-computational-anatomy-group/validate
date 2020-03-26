@@ -35,8 +35,7 @@ if DO_RIRE
     DirData      = 'test-data/RIRE/training_001';
     [Nii,info,C] = LoadRIRE(DirData);    
     IxFixed      = info.t1.ix;
-    scans        = [IxFixed info.t2.ix info.pd.ix info.ct.ix info.pet.ix];
-%     scans        = 1:C;
+    scans        = [info.t1.ix info.t2.ix info.pd.ix info.ct.ix info.pet.ix];
     
     if DO_PW
         % Select scans of interest
@@ -49,7 +48,8 @@ if DO_RIRE
         
     % Registration options
     IxFixed = find(scans == IxFixed);
-    opt     = struct('IxFixed',IxFixed,'ShowAlign',1,'Samp',[1]);
+    opt     = struct('IxFixed',IxFixed,'ShowAlign',1, ...
+                     'Samp',[8 4 2 1]);
     
     % Make results dir    
     DirRes = fullfile(DirData,'results');
@@ -57,14 +57,8 @@ if DO_RIRE
     
     % Do registration             
     tic
-    [~,res] = spm_njtv_coreg(Nii,opt);
+    [~,R] = spm_njtv_coreg(Nii,opt);
     toc
-    
-    % Registration results
-    R    = res.R;
-    matt = res.matt;
-    ixf  = res.ix_fixed;
-    ixm  = res.ix_moving;
         
     % Make temp folder
     DirCpy = 'temp';
@@ -86,11 +80,7 @@ if DO_RIRE
        nf{c}       = fullfile(DirCpy,[nam ext]);
        copyfile(f, nf{c})
 
-       if opt.IxFixed > 0 && c == ixf    
-          continue 
-       end
-
-       M = R(:,:,c)\Mmov;
+       M = R(:,:,c)*Mmov;
        spm_get_space(nf{c},M);
     end
 

@@ -121,7 +121,7 @@ c_from = M_from*c_from;
 R = R_to\R_from;
 % R0 = GetMatTrue(CornersFromTrue,CornersToTrue);
 
-c_to = R\c_from;
+c_to = R*c_from;
 c_to = M_rire*c_to;
 c_to = c_to(1:3,:);
 
