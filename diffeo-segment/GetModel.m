@@ -4,7 +4,7 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % 1. Template prop MICCAI2012+MRBRAINS18, (K1=12), get CGM, SGM, WM, CSF, VEN
 % 2. Fit T1w (K1=12)
 % 3. MRI+CT model (K1=12)
-% 4. CROMIS (K1=12)
+% 4. CROMIS (K1=14)
 % 5. MICCAI2020 (IBSR18)
 % 6. MICCAI2020 (LPBA40)
 % 7. MICCAI2012
@@ -209,21 +209,20 @@ if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % cl
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 4 | CROMIS (K1=12)
+% Model 4 | CROMIS (K1=14)
 %------------------
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Define training population
-ix_pop = [ix.CROMISLABELS ix.CROMIS];
+ix_pop = [ix.CROMIS];
 N      = Inf*ones(1,numel(ix_pop)); % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
-K = 11; K1 = K + 1;
+K = 13; K1 = K + 1;
  
-% Label information
-iles   = 1;
-cm_map = {{iles, setdiff(1:K1,iles)}, {}};
+ibg = 1; ibn = K1;
+cm_map = {{ibg,ibn,setdiff(1:K1,ibn)}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
@@ -241,12 +240,15 @@ if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.workspace    = true;
 sett.write.df           = true;
 sett.write.mu           = [true true];
-sett.write.tc           = [false true false]; 
+sett.write.tc           = [false false false]; 
 sett.model.mg_ix        = 1;
-sett.labels.use         = false; 
-sett.labels.use_initgmm = false;
+sett.model.crop_mu      = false;
+sett.labels.use         = true; 
+sett.labels.use_initgmm = true;
 sett.model.K            = K;  
 sett.show.mx_subjects   = 8;
+sett.nit.init           = 32;
+sett.nit.zm             = 4;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
