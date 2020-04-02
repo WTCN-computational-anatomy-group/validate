@@ -4,7 +4,7 @@ function [P1,sett,model] = GetModel(model_num,P,ix,dir_res,opt)
 % 1. Template prop MICCAI2012+MRBRAINS18, (K1=12), get CGM, SGM, WM, CSF, VEN
 % 2. Fit T1w (K1=12)
 % 3. MRI+CT model (K1=12)
-% 4. CROMIS (K1=14)
+% 4. CROMIS (K1=12)
 % 5. MICCAI2020 (IBSR18)
 % 6. MICCAI2020 (LPBA40)
 % 7. MICCAI2012
@@ -209,7 +209,7 @@ if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % cl
 end
 
 %%%%%%%%%%%%%%%%%%%
-% Model 4 | CROMIS (K1=14)
+% Model 4 | CROMIS (K1=12)
 %------------------
 if model_num == 4, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
@@ -219,7 +219,7 @@ N      = Inf*ones(1,numel(ix_pop)); % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
-K = 13; K1 = K + 1;
+K = 11; K1 = K + 1;
  
 ibg = 1; ibn = K1;
 cm_map = {{ibg,ibn,setdiff(1:K1,ibn)}};
