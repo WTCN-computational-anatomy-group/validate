@@ -4,56 +4,59 @@ clear;
 addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')      % https://github.com/WTCN-computational-anatomy-group/diffeo-segment
 addpath('/home/mbrud/dev/mbrud/code/matlab/auxiliary-functions') % https://github.com/WTCN-computational-anatomy-group/auxiliary-functions
 
-DirModel = '/scratch/Results/diffeo-segment/results/model-3-2D-ax';
-DirData  = '/scratch/Nii/TrainingData/diffeo-segment/2D/ax/MICCAI2012';
-DirOut   = '/scratch/Results/diffeo-segment/results/FitNewSubject';
-PthModel = fullfile(DirModel,'model_spm_mb.mat');
+% Set paths
+DirModel = '/scratch/Results/diffeo-segment/Models/spine-k13-n493';
+DirData  = '/scratch/Nii/Original/BALGRIST';
+DirOut0  = '/scratch/Results/diffeo-segment/results/FitNewSubject';
+PthModel = fullfile(DirModel,'spm_mb_model.mat');
 
-% Data
-pths_im  = spm_select('FPList',DirData,'^((?!_glm).)*\.nii$');
-pths_lab = spm_select('FPList',DirData,'_glm.*\.nii$');
-            
-N    = size(pths_im,1);
-dat0 = struct('F',[],'labels',[]);
-for n=1:N
-    im = nifti(deblank(pths_im(n,:)));
-    lab = {nifti(deblank(pths_lab(n,:))),{}};
-    if n == 1
-        dat        = dat0;
-        dat.F      = im;
-        dat.labels = lab;
-    else
-        datn        = dat0;
-        datn.F      = im;
-        datn.labels = lab;
-        dat         = [dat datn];
-    end
+% Get data
+Files = spm_select('FPList',DirData,'^((?!spine_labels|_PDw).)*\.nii$');
+N     = size(Files,1);
+cl    = cell(1,N);
+dat   = struct('F',cl);
+for n=1:N    
+    dat(n).F = nifti(deblank(Files(n,:)));
 end
 
 % Pick indices
-n   = 21;
-dat = dat(n);
+n    = 13;
+datn = dat(n);
 
 % Settings
-sett                   = struct;
-sett.show.figs         = {'model'};%,'segmentations','normalised','parameters','intensity'};
+sett = struct;
+
+sett.show.figs = {'segmentations'};
+% sett.show.figs = {'model','segmentations','parameters','intensity'};
+
+DirOut = fullfile(DirOut0,['-n' num2str(n)]);
+if isfolder(DirOut), rmdir(DirOut,'s'); end; mkdir(DirOut);
+
 sett.write.dir_res     = DirOut;
-sett.write.tc          = [true false false];
-sett.write.im          = [true false false false];
-sett.write.df          = [false false];
-sett.write.labels      = [false false];
-sett.do.infer          = true;
-sett.show.mx_subjects  = 4;
-% sett.gen.samp_min      = 3;
-% sett.clean_z.mrf       = 2;
-% sett.clean_z.gwc_tix   = struct('gm',[1],'wm',[2],'csf',[3]);
-sett.write.vel         = true;
-sett.write.affine      = true;
+sett.write.im          = [true true false false];
+sett.write.tc          = false(8,4);
+sett.write.tc(1:3,1:3) = true;
+sett.write.clean_def   = false;
+
+sett.do.infer = false;
+
+sett.gen.has_spine     = true;
+sett.clean_z.mrf       = 2;
+sett.clean_z.gwc_tix   = struct('gm',[1],'wm',[2],'csf',[3]);
+sett.clean_z.gwc_level = 1;
+
+sett.model.appear_ix  = 1;
+sett.model.appear_chn = 1;
+
+sett.nit.init         = 128;
+sett.model.init_mu_dm = 8;
+sett.var.v_settings   = [0 0 0.2 0.05 0.2]*2;
 
 % Run Register
-[dat,mu,sett] = spm_mb_fit(dat,'PthModel',PthModel,'sett',sett);
+[datn,mu,sett] = spm_mb_fit(datn,'PthModel',PthModel,'sett',sett);
 
 % Write results in normalised space
-spm_mb_output(dat,mu,sett);
+spm_mb_output(datn,mu,sett);
 
-spm_check_registration(spm_select('FPList',sett.write.dir_res,'^(im1|c).*\.nii$'))
+spm_check_registration(spm_select('FPList',sett.write.dir_res,'^(imc1|c[1,2,3]).*\.nii$'))
+% spm_check_registration(spm_select('FPList',sett.write.dir_res,'^(imc1|c[1,2,3]|wc[1,2,3]).*\.nii$'))
