@@ -35,9 +35,12 @@ if isfield(sett,'gen') && isfield(sett.gen,'num_workers') && sett.gen.num_worker
     % are here set to speed up the algorithm.
     setenv('SPM_NUM_THREADS',sprintf('%d',-1));
 else
-    setenv('SPM_NUM_THREADS',sprintf('%d',0));
-    %par_info = parcluster('local');
-    %parpool('local',min(par_info.NumWorkers,sett.gen.num_workers));
+    par_info = parcluster('local');    
+    nthreads = floor(par_info.NumWorkers/numel(in));
+    if nthreads == 1
+        nthreads = 0;
+    end
+    setenv('SPM_NUM_THREADS',sprintf('%d',nthreads));
 end
 
 if do_gw
@@ -204,6 +207,18 @@ for p=1:Npop % loop over populations
                 pths_im{c} = spm_select('FPList',dir_data,['-' modality{c} '.*\.nii$']);
             end
             pths_lab = spm_select('FPList',dir_data,'segm.*\.nii$');  
+        case 'RIRE'
+            for c=1:C
+                if strcmp(modality{c},'T1')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!ct|PD|T2).)*\.nii$'); % T1
+                elseif strcmp(modality{c},'T2')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!ct|PD|T1).)*\.nii$'); % T2
+                elseif strcmp(modality{c},'PD')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!T1|ct|T2).)*\.nii$'); % PD
+                elseif strcmp(modality{c},'CT')
+                    pths_im{c} = spm_select('FPList',dir_data,'^((?!T1|PD|T2).)*\.nii$'); % CT
+                end
+            end              
         otherwise            
             error('Unknown population!')
     end

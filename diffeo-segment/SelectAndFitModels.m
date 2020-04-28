@@ -147,7 +147,7 @@ end
 
 ix = struct('ATLAS',1,'BALGRIST',2,'CROMIS',3,'CROMISLABELS',4,'DELIRIUM',5, ...
             'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10,'ROB',11, ...
-            'MPMCOMPLIANT',12,'MADRID',13,'IBSR18',14,'CTHEALTHY',15, ...
+            'MPMCOMPLIANT',12,'MADRID',13,'IBSR18',14,'CTHEALTHY',15, 'RIRE', 16, ...
             'LPBA40',16);
 P  = cell(1,numel(ix));
 
@@ -166,6 +166,7 @@ P{ix.MADRID}       = {fullfile(dir_data,d_2D,'MADRID'),       {'T1'}, Inf, [], {
 P{ix.IBSR18}       = {fullfile(dir_data,d_2D,'IBSR18'),       {'T1'}, Inf, [], {}, false, true, true};
 P{ix.CTHEALTHY}    = {fullfile(dir_data,d_2D,'CTHEALTHY'),    {'CT'}, Inf, [], {}, true, true, false};
 P{ix.LPBA40}       = {fullfile(dir_data,d_2D,'LPBA40'),       {'T1'}, Inf, [], {}, false, true, true};
+P{ix.RIRE}         = {fullfile(dir_data,d_2D,'RIRE'),         {'T1','T2','PD','CT'}, Inf, [], {}, false, true, [true true true false]};
 
 % Populations of tissue segmentations (2D not available)
 P{ix.IXIC}  = {fullfile(dir_data,'IXIC'),  {'GM','WM','CSF'}, Inf, [], {}, false};
@@ -182,10 +183,10 @@ function [dir_data,dir_res] = UserSpecific(user)
 % . mbrud-home
 % . mbrud-fil
 if strcmp(user,'mbrud-home')    
-    addpath('/home/smajjk/dev/diffeo-segment')
-    addpath('/home/smajjk/dev/auxiliary-functions')
-    dir_data = '/home/smajjk/Data/Nii/diffeo-segment/';
-    dir_res  = '/home/smajjk/Data/Results/diffeo-segment';
+    addpath('/home/mbrud/dev/matlab/diffeo-segment')
+    addpath('/home/mbrud/dev/matlab/auxiliary-functions')
+    dir_data = '/home/mbrud/Data/Training/diffeo-segment';
+    dir_res  = '/home/mbrud/Data/Results/diffeo-segment';
 elseif strcmp(user,'mbrud-fil')    
     addpath('/home/mbrud/dev/mbrud/code/matlab/diffeo-segment')
     addpath('/home/mbrud/dev/mbrud/code/matlab/auxiliary-functions')

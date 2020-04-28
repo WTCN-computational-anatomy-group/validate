@@ -3,32 +3,31 @@ function MakeTrainingData
 % -------------------------------------------------------------------------
 % POPULATIONS
 % -------------------------------------------------------------------------
-% [x] | 1.ATLAS         | T1           | 1.les                 | N = 142
-% [x] | 2.BALGRIST      | T1           | 1.spn                 | N = 19
-% [x] | 3.CROMIS        | CT           | n/a                   | N = 626
-% [x] | 4.CROMISLABELS  | CT           | 1.les,2.cal           | N = 60
-% [x] | 5.DELIRIUM      | CT           | n/a                   | N = 1,025
-% [x] | 6.IXI           | T1,T2,PD,MRA | n/a                   | N = 567
-% [x] | 7.MICCAI2012    | T1           | 1.gm,2.wn,3.ven       | N = 35
-% [x] | 8.MRBRAINS18    | T1,FLAIR,IR  | 1.gm,2.wn,3.ven,4.cer | N = 7 
-% [ ] | 9.RIRE          | T1,T2,PD,CT  | n/a                   | N = 19
-% [x] | 10.ROB          | CT           | n/a                   | N = 72
-% [x] | 11.MPMCOMPLIANT | MPM          | n/a                   | N = 10
-% [x] | 11.MADRID       | T1           | n/a                   | N = 16
+% ATLAS        | T1           | yes | N = 142
+% BALGRIST     | T1           | yes | N = 19
+% CROMIS       | CT           | n/a | N = 626
+% CROMISLABELS | CT           | yes | N = 60
+% DELIRIUM     | CT           | n/a | N = 1,025
+% IXI          | T1,T2,PD,MRA | n/a | N = 567
+% MADRID       | T1           | n/a | N = 16
+% MICCAI2012   | T1           | yes | N = 35
+% MPMCOMPLIANT | MPM          | n/a | N = 10
+% MRBRAINS18   | T1           | yes | N = 7 
+% RIRE         | T1,T2,PD,CT  | n/a | N = 19
+% ROB          | CT           | n/a | N = 72
 % -------------------------------------------------------------------------
 %
 %__________________________________________________________________________
 
-addpath('/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/'); % https://github.com/WTCN-computational-anatomy-group/Patient-Preprocessing 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Global settings
 %-------------------------------------
 
 S0         = Inf;
-NumWorkers = 8;
-DirData0   = '/scratch/Nii/Original';
-DirOut     = '/scratch/Nii/TrainingData/preproc';
+NumWorkers = Inf;
+DirData0   = '/media/mbrud/Storage/Original';
+DirOut     = '/home/mbrud/Data/Training/diffeo-segment';
 Write2D    = false;
 
 if ~(exist(DirOut,'dir') == 7), mkdir(DirOut); end
@@ -48,6 +47,7 @@ Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
 % Do.MICCAI2012   = true;
 % Do.MPMCOMPLIANT = true;
 % Do.MRBRAINS18   = true;
+% Do.RIRE         = true;
 % Do.ROB          = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,7 +82,9 @@ if Do.(Population)
     opt.do.crop     = true;
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -133,7 +135,9 @@ if Do.(Population)
     opt.reslice.ref = 1;
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -174,10 +178,12 @@ if Do.(Population)
     opt.do.res_orig = true;
     opt.do.real_mni = true;
     opt.do.crop     = true;
+    opt.crop.keep_neck = false;
     opt.do.vx       = true; 
     if Write2D
-        opt.do.nm_reorient = true;
+        opt.do.nm_reorient = true;        
         opt.do.write2d     = true;
+        opt.vx.min_1mm     = false;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
     end
@@ -219,10 +225,12 @@ if Do.(Population)
     opt.do.res_orig = true;
     opt.do.real_mni = true;
     opt.do.crop     = true;
+    opt.crop.keep_neck = false;
     opt.do.vx       = true; 
     opt.labels.part = {1,2};
     if Write2D
         opt.do.nm_reorient = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -263,10 +271,12 @@ if Do.(Population)
     opt.do.res_orig = true;
     opt.do.real_mni = true;
     opt.do.crop     = true;
+    opt.crop.keep_neck = false;
     opt.do.vx       = true;     
     if Write2D
         opt.do.nm_reorient = true;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -314,7 +324,9 @@ if Do.(Population)
     opt.reslice.ref = 3;
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;        
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -356,7 +368,9 @@ if Do.(Population)
     opt.do.crop     = true;
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -407,7 +421,9 @@ if Do.(Population)
                        [4 11 49 50 51 52]};
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -449,10 +465,15 @@ if Do.(Population)
     opt.dir_out     = fullfile(DirOut,Population);
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
     opt.do.real_mni = true;
-    if Write2D
-        opt.do.crop        = true;
+    opt.do.coreg    = true;
+    opt.do.crop     = true;
+    opt.do.reslice  = true;
+    opt.reslice.ref = 4;
+    if Write2D        
+        opt.crop.keep_neck = false;
         opt.do.nm_reorient = true;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -504,7 +525,9 @@ if Do.(Population)
     opt.labels.part = {1,2,8,3,7,5,6}; % cgm,sgm,spn,wm,cer,csf,ven
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -526,14 +549,28 @@ if Do.(Population)
     fprintf('======================================\n')
 
     DirData = fullfile(DirData0,Population);
-    files   = spm_select('FPListRec',DirData,'^.*\.nii$');
-    S       = size(files,1);
+    [~,d0]   = spm_select('FPList',DirData,'^.*\.nii$');
+    S       = size(d0,1);
 
     dat = struct; cnt = 1;
     for s=1:S
-        dat(cnt).Nii{1}    = nifti;
-        dat(cnt).Nii{1}(1) = nifti(deblank(files(s,:)));
-
+        
+        d        = deblank(d0(s,:));
+        files_ct = spm_select('FPListRec',d,'_ct.nii$');
+        files_t1 = spm_select('FPListRec',d,'_mr_T1.nii$');
+        files_t2 = spm_select('FPListRec',d,'_mr_T2.nii$');
+        files_pd = spm_select('FPListRec',d,'_mr_PD.nii$');
+    
+        if isempty(files_ct) || isempty(files_t1) || isempty(files_t2) || isempty(files_pd)
+            continue
+        end
+            
+        dat(cnt).Nii{1}    = nifti;           
+        dat(cnt).Nii{1}(1) = nifti(deblank(files_t1));
+        dat(cnt).Nii{1}(2) = nifti(deblank(files_t2));
+        dat(cnt).Nii{1}(3) = nifti(deblank(files_pd));
+        dat(cnt).Nii{1}(4) = nifti(deblank(files_ct));
+        
         if cnt == S0, break; end
         cnt = cnt + 1;    
     end
@@ -546,10 +583,13 @@ if Do.(Population)
     opt.do.crop     = true;
     opt.do.coreg    = true;
     opt.do.reslice  = true;
-    opt.reslice.ref = 3;
+    opt.reslice.ref = 1;
+    opt.do.vx       = true;
     if Write2D
         opt.do.nm_reorient = true;
+        opt.crop.keep_neck = false;
         opt.do.vx          = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
@@ -589,9 +629,11 @@ if Do.(Population)
     if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end    
     opt.do.real_mni = true;
     opt.do.crop     = true;
+    opt.crop.keep_neck = false;
     opt.do.vx       = true; 
     if Write2D
         opt.do.nm_reorient = true;
+        opt.vx.min_1mm     = false;
         opt.do.write2d     = true;
         opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
         if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end

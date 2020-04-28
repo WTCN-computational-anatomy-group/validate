@@ -27,22 +27,21 @@ sett  = struct;
 if model_num == 0, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 
 % Define training population
-ix_pop = [ix.MPMCOMPLIANT];
-N      = 100*ones(1,numel(ix_pop));
-N      = min(N,numsubj);
-int_ix = 1;
+ix_pop = [ix.RIRE];
+N      = numsubj*ones(1,numel(ix_pop));
 
 % Number of template classes
-K = 5; K1 = K + 1;
+K = 7; K1 = K + 1;
 
 % Label information
 % icgm   = 1; isgm = 2; iwm = 3; icsf = 4; iven = 5;
 % cm_map = {{icgm,isgm,[isgm iwm],iwm,iven, setdiff(1:K1,[icgm isgm iven])}, ...
 %           {icgm,isgm,[isgm iwm],iwm,[isgm iwm],icsf,iven,setdiff(1:K1,[icgm isgm iven])}, ...
 %           {iwm,[]}};
-cm_map = cell(1,numel(ix_pop));
 
-P1 = P(ix_pop);
+cm_map = cell(1,numel(ix_pop));
+int_ix = 1:numel(ix_pop);
+P1     = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p); 
     P1{p}{4} = int_ix(p);      
@@ -51,23 +50,14 @@ end
 
 % Settings
 sett                    = struct;
-if showfig, sett.show.figs = {'model','segmentations','init','parameters','intensity'}; end
+if showfig, sett.show.figs = {'model','segmentations','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
-sett.write.mu           = [true true];
-sett.model.mg_ix        = 1;
 sett.labels.use         = false; 
 sett.model.K            = K;  
-sett.show.mx_subjects   = 8;
-% sett.var.v_settings     = [1e-4 0 0.2 0.05 0.2]*4;     
-% sett.model.init_mu_dm   = 4;
-% sett.nit.zm             = 3;
-sett.do.updt_vel        = true;
-sett.do.updt_aff        = true;
-sett.do.updt_int        = true;
-sett.do.updt_template   = true;
+sett.write.scal_mom     = true;
 end
 
 %%%%%%%%%%%%%%%%%%%
@@ -221,8 +211,9 @@ N      = min(N,numsubj);
 % Number of template classes
 K = 11; K1 = K + 1;
  
-ibg = 1; ibn = K1;
-cm_map = {{ibg,ibn,setdiff(1:K1,ibn)}};
+cm_map = cell(1,numel(ix_pop));
+% ibg = 1; ibn = K1;
+% cm_map = {{ibg,ibn,setdiff(1:K1,ibn)}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
@@ -237,18 +228,13 @@ if showfig, sett.show.figs = {'model','segmentations','init','intensity'}; end
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
-sett.write.workspace    = true;
 sett.write.df           = true;
 sett.write.mu           = [true true];
-sett.write.tc           = [false false false]; 
-sett.model.mg_ix        = 1;
-sett.model.crop_mu      = false;
-sett.labels.use         = true; 
-sett.labels.use_initgmm = true;
+sett.write.tc           = [true false false];  % native, warped, warped-mod
 sett.model.K            = K;  
 sett.show.mx_subjects   = 8;
 sett.nit.init           = 32;
-sett.nit.zm             = 4;
+sett.nit.zm             = 3;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 
