@@ -36,7 +36,10 @@ if isfield(sett,'gen') && isfield(sett.gen,'num_workers') && sett.gen.num_worker
     setenv('SPM_NUM_THREADS',sprintf('%d',-1));
 else
     par_info = parcluster('local');    
-    nthreads = floor(par_info.NumWorkers/numel(in));
+    num_cores = par_info.NumWorkers;
+    num_work = sett.gen.num_workers;
+    num_subj = numel(in);
+    nthreads = floor(num_cores/min(num_subj, num_work));
     if nthreads == 1
         nthreads = 0;
     end

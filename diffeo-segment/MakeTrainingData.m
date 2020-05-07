@@ -276,8 +276,8 @@ if Do.(Population)
     opt.do.real_mni = true;
     opt.do.crop     = true;
     opt.crop.keep_neck = false;
-    opt.do.vx       = true; 
     if Write2D
+        opt.do.vx          = true; 
         opt.do.nm_reorient = true;
         opt.vx.min_1mm     = false;
         opt.do.write2d     = true;

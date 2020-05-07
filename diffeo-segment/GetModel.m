@@ -338,11 +338,11 @@ N      = Inf*ones(1,numel(ix_pop)); % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
-K = 9; K1 = K + 1;
+K = 8; K1 = K + 1;
  
 ibg = 1; ibn = 2; iven = 3; ical = 4; iles = 5; irest = 6;
 cm_map = {{ibg, ibn, iven, ical, iles, irest, ...
-           setdiff(1:K1,[ibg, irest, ical])}};
+           setdiff(1:K1,[ibg, irest, ical, iles])}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
@@ -363,7 +363,7 @@ sett.model.K            = K;
 sett.show.mx_subjects   = 8;
 sett.nit.init           = 64;
 sett.nit.zm             = 3;
-sett.model.mg_ix        = [1 1 1 2 3 3 4 5 6 6 6 7 8 9 10];
+sett.model.mg_ix        = [1 1 2 3 3 4 5 6 6 7 8 9];
 sett.model.vx           = 1;
 sett.labels.use         = true; 
 sett.labels.use_initgmm = true;
