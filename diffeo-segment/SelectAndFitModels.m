@@ -33,24 +33,25 @@ function SelectAndFitModels(opt)
 % -------------------------------------------------------------------------
 % POPULATIONS
 % -------------------------------------------------------------------------
-%     | Name         | Modality     | Labels                                   | NumSubj 
+%     | Name          | Modality     | Labels                                   | NumSubj 
 % -------------------------------------------------------------------------
-% 1   | ATLAS        | T1           | 1.les                                    | 142     
-% 2   | BALGRIST     | T1,PD        | 1.spn                                    | 19      
-% 3   | CROMIS       | CT           | 1.bg,2.bone                              | 686     
-% 4   | CROMISLABELS | CT           | 1.les,2.cal                              | 60      
-% 5   | DELIRIUM     | CT           | n/a                                      | 1,025   
-% 6   | IXI          | T1,T2,PD,MRA | n/a                                      | 567     
-% 7   | IXIRC        | GM,WM,CSF    | n/a                                      | 32      
-% 8   | IXIC         | GM,WM,CSF    | n/a                                      | 32      
-% 9   | MICCAI2012   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven       | 35     
-% 10  | MRBRAINS18   | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.cer,6.csf,7.ven | 7       
-% 11  | ROB          | CT           | n/a                                      | 72    
-% 12  | MPMCOMPLIANT | MPM          | n/a                                      | 10
-% 13  | MADRID       | T1           | n/a                                      | 16
-% 14  | IBSR18       | T1           | n/a                                      | 18
-% 15  | CTHEALTHY    | CT           | 1.bg,2.bone                              | 50
-% 16  | LPBA40       | T1           | n/a                                      | 40
+% 1   | ATLAS         | T1           | 1.les                                    | 142     
+% 2   | BALGRIST      | T1,PD        | 1.spn                                    | 19      
+% 3   | CROMIS        | CT           | 1.bg,2.bone                              | 686     
+% 4   | CROMISLABELS  | CT           | 1.les,2.cal                              | 60      
+% 5   | DELIRIUM      | CT           | n/a                                      | 1,025   
+% 6   | IXI           | T1,T2,PD,MRA | n/a                                      | 567     
+% 7   | IXIRC         | GM,WM,CSF    | n/a                                      | 32      
+% 8   | IXIC          | GM,WM,CSF    | n/a                                      | 32      
+% 9   | MICCAI2012    | T1           | 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven       | 35     
+% 10  | MRBRAINS18    | T1           | 1.cgm,2.sgm,3.spn,4.wm,5.cer,6.csf,7.ven | 7       
+% 11  | ROB           | CT           | n/a                                      | 72    
+% 12  | MPMCOMPLIANT  | MPM          | n/a                                      | 10
+% 13  | MADRID        | T1           | n/a                                      | 16
+% 14  | IBSR18        | T1           | n/a                                      | 18
+% 15  | CTHEALTHY     | CT           | 1.bg,2.bone                              | 50
+% 16  | LPBA40        | T1           | n/a                                      | 40
+% 17  | CROMISPETTERI | CT           | 1.bg,2.bone,3.ven,4,ich,5.rest,6.cal     | 20      
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
@@ -148,25 +149,26 @@ end
 ix = struct('ATLAS',1,'BALGRIST',2,'CROMIS',3,'CROMISLABELS',4,'DELIRIUM',5, ...
             'IXI',6,'IXIC',7,'IXIRC',8,'MICCAI2012',9,'MRBRAINS18',10,'ROB',11, ...
             'MPMCOMPLIANT',12,'MADRID',13,'IBSR18',14,'CTHEALTHY',15, 'RIRE', 16, ...
-            'LPBA40',16);
+            'LPBA40',16,'CROMISPETTERI',17);
 P  = cell(1,numel(ix));
 
 % Populations of images (GMM will be fitted)
-P{ix.ATLAS}        = {fullfile(dir_data,d_2D,'ATLAS'),        {'T1'}, Inf, [], {}, false, true, true};
-P{ix.BALGRIST}     = {fullfile(dir_data,d_2D,'BALGRIST'),     {'T1','PD'}, Inf, [], {}, false, true, true};
-P{ix.CROMIS}       = {fullfile(dir_data,d_2D,'CROMIS'),       {'CT'}, Inf, [], {}, true, true, false};
-P{ix.CROMISLABELS} = {fullfile(dir_data,d_2D,'CROMISLABELS'), {'CT'}, Inf, [], {}, true, true, false};
-P{ix.DELIRIUM}     = {fullfile(dir_data,d_2D,'DELIRIUM'),     {'CT'}, Inf, [], {}, true, true, false};
-P{ix.IXI}          = {fullfile(dir_data,d_2D,'IXI'),          {'T1','T2','PD','MRA'}, Inf, [], {}, false, true, true};
-P{ix.MICCAI2012}   = {fullfile(dir_data,d_2D,'MICCAI2012'),   {'T1'}, Inf, [], {}, false, true, true};
-P{ix.MRBRAINS18}   = {fullfile(dir_data,d_2D,'MRBRAINS18'),   {'T1'}, Inf, [], {}, false, true, true};
-P{ix.ROB}          = {fullfile(dir_data,d_2D,'ROB'),          {'CT'}, Inf, [], {}, true, true, false};
-P{ix.MPMCOMPLIANT} = {fullfile(dir_data,d_2D,'MPMCOMPLIANT'), {'MT','PD','R2','T1'}, Inf, [], {}, false, true, [true true false true]};
-P{ix.MADRID}       = {fullfile(dir_data,d_2D,'MADRID'),       {'T1'}, Inf, [], {}, false, true, true};
-P{ix.IBSR18}       = {fullfile(dir_data,d_2D,'IBSR18'),       {'T1'}, Inf, [], {}, false, true, true};
-P{ix.CTHEALTHY}    = {fullfile(dir_data,d_2D,'CTHEALTHY'),    {'CT'}, Inf, [], {}, true, true, false};
-P{ix.LPBA40}       = {fullfile(dir_data,d_2D,'LPBA40'),       {'T1'}, Inf, [], {}, false, true, true};
-P{ix.RIRE}         = {fullfile(dir_data,d_2D,'RIRE'),         {'T1','T2','PD','CT'}, Inf, [], {}, false, true, [true true true false]};
+P{ix.ATLAS}         = {fullfile(dir_data,d_2D,'ATLAS'),         {'T1'}, Inf, [], {}, false, true, true};
+P{ix.BALGRIST}      = {fullfile(dir_data,d_2D,'BALGRIST'),      {'T1','PD'}, Inf, [], {}, false, true, true};
+P{ix.CROMIS}        = {fullfile(dir_data,d_2D,'CROMIS'),        {'CT'}, Inf, [], {}, true, true, false};
+P{ix.CROMISLABELS}  = {fullfile(dir_data,d_2D,'CROMISLABELS'),  {'CT'}, Inf, [], {}, true, true, false};
+P{ix.DELIRIUM}      = {fullfile(dir_data,d_2D,'DELIRIUM'),      {'CT'}, Inf, [], {}, true, true, false};
+P{ix.IXI}           = {fullfile(dir_data,d_2D,'IXI'),           {'T1','T2','PD','MRA'}, Inf, [], {}, false, true, true};
+P{ix.MICCAI2012}    = {fullfile(dir_data,d_2D,'MICCAI2012'),    {'T1'}, Inf, [], {}, false, true, true};
+P{ix.MRBRAINS18}    = {fullfile(dir_data,d_2D,'MRBRAINS18'),    {'T1'}, Inf, [], {}, false, true, true};
+P{ix.ROB}           = {fullfile(dir_data,d_2D,'ROB'),           {'CT'}, Inf, [], {}, true, true, false};
+P{ix.MPMCOMPLIANT}  = {fullfile(dir_data,d_2D,'MPMCOMPLIANT'),  {'MT','PD','R2','T1'}, Inf, [], {}, false, true, [true true false true]};
+P{ix.MADRID}        = {fullfile(dir_data,d_2D,'MADRID'),        {'T1'}, Inf, [], {}, false, true, true};
+P{ix.IBSR18}        = {fullfile(dir_data,d_2D,'IBSR18'),        {'T1'}, Inf, [], {}, false, true, true};
+P{ix.CTHEALTHY}     = {fullfile(dir_data,d_2D,'CTHEALTHY'),     {'CT'}, Inf, [], {}, true, true, false};
+P{ix.LPBA40}        = {fullfile(dir_data,d_2D,'LPBA40'),        {'T1'}, Inf, [], {}, false, true, true};
+P{ix.RIRE}          = {fullfile(dir_data,d_2D,'RIRE'),          {'T1','T2','PD','CT'}, Inf, [], {}, false, true, [true true true false]};
+P{ix.CROMISPETTERI} = {fullfile(dir_data,d_2D,'CROMISPETTERI'), {'CT'}, Inf, [], {}, true, true, false};
 
 % Populations of tissue segmentations (2D not available)
 P{ix.IXIC}  = {fullfile(dir_data,'IXIC'),  {'GM','WM','CSF'}, Inf, [], {}, false};

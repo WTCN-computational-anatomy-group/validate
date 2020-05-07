@@ -3,18 +3,19 @@ function MakeTrainingData
 % -------------------------------------------------------------------------
 % POPULATIONS
 % -------------------------------------------------------------------------
-% ATLAS        | T1           | yes | N = 142
-% BALGRIST     | T1           | yes | N = 19
-% CROMIS       | CT           | n/a | N = 626
-% CROMISLABELS | CT           | yes | N = 60
-% DELIRIUM     | CT           | n/a | N = 1,025
-% IXI          | T1,T2,PD,MRA | n/a | N = 567
-% MADRID       | T1           | n/a | N = 16
-% MICCAI2012   | T1           | yes | N = 35
-% MPMCOMPLIANT | MPM          | n/a | N = 10
-% MRBRAINS18   | T1           | yes | N = 7 
-% RIRE         | T1,T2,PD,CT  | n/a | N = 19
-% ROB          | CT           | n/a | N = 72
+% ATLAS         | T1           | yes | N = 142
+% BALGRIST      | T1           | yes | N = 19
+% CROMIS        | CT           | n/a | N = 626
+% CROMISLABELS  | CT           | yes | N = 60
+% CROMISPETTERI | CT           | yes | N = 20
+% DELIRIUM      | CT           | n/a | N = 1,025
+% IXI           | T1,T2,PD,MRA | n/a | N = 567
+% MADRID        | T1           | n/a | N = 16
+% MICCAI2012    | T1           | yes | N = 35
+% MPMCOMPLIANT  | MPM          | n/a | N = 10
+% MRBRAINS18    | T1           | yes | N = 7 
+% RIRE          | T1,T2,PD,CT  | n/a | N = 19
+% ROB           | CT           | n/a | N = 72
 % -------------------------------------------------------------------------
 %
 %__________________________________________________________________________
@@ -34,21 +35,22 @@ if ~(exist(DirOut,'dir') == 7), mkdir(DirOut); end
 
 Do = false;
 Do = struct('ATLAS',Do,'BALGRIST',Do,'CROMIS',Do,'CROMISLABELS',Do, ...
-            'DELIRIUM',Do,'IXI',Do,'MADRID',Do,'MICCAI2012',Do, ...
+            'CROMISPETTERI',Do,'DELIRIUM',Do,'IXI',Do,'MADRID',Do,'MICCAI2012',Do, ...
             'MPMCOMPLIANT',Do,'MRBRAINS18',Do,'RIRE',Do, 'ROB',Do);   
         
-% Do.ATLAS        = true;
-% Do.BALGRIST     = true;
-% Do.CROMIS       = true;
-% Do.CROMISLABELS = true;
-% Do.DELIRIUM     = true;
-% Do.IXI          = true;
-% Do.MADRID       = true;
-% Do.MICCAI2012   = true;
-% Do.MPMCOMPLIANT = true;
-% Do.MRBRAINS18   = true;
-% Do.RIRE         = true;
-% Do.ROB          = true;
+% Do.ATLAS         = true;
+% Do.BALGRIST      = true;
+% Do.CROMIS        = true;
+% Do.CROMISLABELS  = true;
+% Do.CROMISPETTERI = true;
+% Do.DELIRIUM      = true;
+% Do.IXI           = true;
+% Do.MADRID        = true;
+% Do.MICCAI2012    = true;
+% Do.MPMCOMPLIANT  = true;
+% Do.MRBRAINS18    = true;
+% Do.RIRE          = true;
+% Do.ROB           = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ATLAS
@@ -228,6 +230,53 @@ if Do.(Population)
     opt.crop.keep_neck = false;
     opt.do.vx       = true; 
     opt.labels.part = {1,2};
+    if Write2D
+        opt.do.nm_reorient = true;
+        opt.vx.min_1mm     = false;
+        opt.do.write2d     = true;
+        opt.dir_out2d      = fullfile(DirOut,['2D_' Population]);
+        if (exist(opt.dir_out2d,'dir') == 7), rmdir(opt.dir_out2d,'s'); end
+    end
+    opt.do.go2native = false;  
+    if NumWorkers == 1 || S0 == 1
+        for s=1:numel(dat), RunPreproc(dat(s).Nii,opt); end
+    else
+        parfor(s=1:numel(dat),NumWorkers), RunPreproc(dat(s).Nii,opt); end
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CROMISPETTERI
+%-------------------------------------
+Population = 'CROMISPETTERI';
+if Do.(Population)
+    fprintf('======================================\n')
+    fprintf('| %s\n',Population);
+    fprintf('======================================\n')
+
+    DirData = fullfile(DirData0,Population);
+    files   = spm_select('FPListRec',DirData,'^.*\.nii$');
+    S       = size(files,1);
+
+    dat = struct; cnt = 1;
+    for s=1:2:S
+        dat(cnt).Nii{1}    = nifti;
+        dat(cnt).Nii{1}(1) = nifti(deblank(files(s,:))); % CT
+        dat(cnt).Nii{2}    = nifti;
+        dat(cnt).Nii{2}(1) = nifti(deblank(files(s + 1,:))); % Labels
+
+        if cnt == S0, break; end
+        cnt = cnt + 1;    
+    end
+
+    % Set options and do preprocessing
+    opt             = struct;    
+    opt.dir_out     = fullfile(DirOut,Population);    
+    if (exist(opt.dir_out,'dir') == 7), rmdir(opt.dir_out,'s'); end
+    opt.do.res_orig = true;
+    opt.do.real_mni = true;
+    opt.do.crop     = true;
+    opt.crop.keep_neck = false;
+    opt.do.vx       = true; 
     if Write2D
         opt.do.nm_reorient = true;
         opt.vx.min_1mm     = false;
