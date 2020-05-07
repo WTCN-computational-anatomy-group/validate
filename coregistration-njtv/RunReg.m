@@ -28,11 +28,12 @@ if DO_RIRE
     % Hospital data
     %-----------------------
     
-    SHOW_ALIGNED = false;
+    SHOW_ALIGNED = true;
     DO_PW        = false;
     
     % Get images
-    DirData      = 'test-data/RIRE/training_001';
+    DirData      = '/home/mbrud/Data/Challenges/RIRE/train/training_001';
+%     DirData      = '/home/mbrud/Data/Challenges/RIRE/test/patient_001';
     [Nii,info,C] = LoadRIRE(DirData);    
     IxFixed      = info.t1.ix;
     scans        = [info.t1.ix info.t2.ix info.pd.ix info.ct.ix info.pet.ix];
@@ -48,8 +49,12 @@ if DO_RIRE
         
     % Registration options
     IxFixed = find(scans == IxFixed);
-    opt     = struct('IxFixed',IxFixed,'ShowAlign',1, ...
-                     'Samp',[8 4 2 1]);
+    opt     = struct('IxFixed', IxFixed, ...
+                     'ShowAlign', 1, ...
+                     'Samp', [8 4 2 1], ...
+                     'PreComp', true, ...
+                     'ShowFit4Scaling', false, ...
+                     'DegBoundCond', [2 0]);
     
     % Make results dir    
     DirRes = fullfile(DirData,'results');
@@ -84,8 +89,10 @@ if DO_RIRE
        spm_get_space(nf{c},M);
     end
 
-    % Get error
-    ValidateRIRE(DirData,DirRes);
+    if contains(DirData, 'train')
+        % Get error
+        ValidateRIRE(DirData,DirRes);
+    end
     
     if SHOW_ALIGNED
         % Show aligned copies
