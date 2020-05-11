@@ -340,9 +340,15 @@ N      = min(N,numsubj);
 % Number of template classes
 K = 8; K1 = K + 1;
  
-ibg = 1; ibn = 2; iven = 3; ical = 4; iles = 5; irest = 6;
-cm_map = {{ibg, ibn, iven, ical, iles, irest, ...
-           setdiff(1:K1,[ibg, irest, ical, iles])}};
+ibrain = [1 2 3];
+iven = 4;
+iles = 5;
+ical = 6;
+ibn = 7;
+irest = 8;
+ibg = 9;     
+cm_map = {{ibg, ibn, iven, iles, ical, [ibrain iven], irest, ...
+           setdiff(1:K1,[ibrain, iven, ical, iles])}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
@@ -358,15 +364,20 @@ sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
 sett.write.df           = false;
+sett.write.mu           = [true true];
 sett.write.tc           = [false false false];  % native, warped, warped-mod
 sett.model.K            = K;  
-sett.show.mx_subjects   = 8;
-sett.nit.init           = 64;
 sett.nit.zm             = 3;
-sett.model.mg_ix        = [1 1 2 3 3 4 5 6 6 7 8 9];
+sett.model.mg_ix        = [1 2 3 4 5 6 7 8 8 9 9 9];
 sett.model.vx           = 1;
 sett.labels.use         = true; 
 sett.labels.use_initgmm = true;
+sett.var.v_settings     = [0 0 0.2 0.05 0.2]*4;
+sett.nit.init           = 16;
+sett.model.init_mu_dm   = 16;
+sett.do.updt_bf         = true;
+sett.labels.w           = 0.9999;
+sett.model.crop_mu      = false;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
 end
 %==========================================================================

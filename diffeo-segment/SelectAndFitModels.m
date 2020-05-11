@@ -51,7 +51,7 @@ function SelectAndFitModels(opt)
 % 14  | IBSR18        | T1           | n/a                                      | 18
 % 15  | CTHEALTHY     | CT           | 1.bg,2.bone                              | 50
 % 16  | LPBA40        | T1           | n/a                                      | 40
-% 17  | CROMISPETTERI | CT           | 1.bg,2.bone,3.ven,4,ich,5.rest,6.cal     | 20      
+% 17  | CROMISPETTERI | CT           | 1.bg,2.bone,3.ven,4,ich,5.cal,6.rest     | 20      
 %
 %__________________________________________________________________________
 % Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
