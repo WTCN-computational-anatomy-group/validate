@@ -338,17 +338,17 @@ N      = Inf*ones(1,numel(ix_pop)); % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
-K = 8; K1 = K + 1;
+K = 10; K1 = K + 1;
  
-ibrain = [1 2 3];
-iven = 4;
-iles = 5;
-ical = 6;
-ibn = 7;
-irest = 8;
-ibg = 9;     
-cm_map = {{ibg, ibn, iven, iles, ical, [ibrain iven], irest, ...
-           setdiff(1:K1,[ibrain, iven, ical, iles])}};
+ibrain = 1:5;
+iven = 6;
+iles = 7;
+ical = 8;
+ibn = 9;
+irest = 10;
+ibg = 11;     
+cm_map = {{ibg, ibn, iven, iles, ical, ibrain, irest, ...
+           setdiff(1:K1,[iven, ical, iles])}};
 
 P1 = P(ix_pop);
 for p=1:numel(P1)
@@ -368,7 +368,7 @@ sett.write.mu           = [true true];
 sett.write.tc           = [false false false];  % native, warped, warped-mod
 sett.model.K            = K;  
 sett.nit.zm             = 3;
-sett.model.mg_ix        = [1 2 3 4 5 6 7 8 8 9 9 9];
+sett.model.mg_ix        = [1 2 3 4 5 6 7 8 9 10 10 11 11];
 sett.model.vx           = 1;
 sett.labels.use         = true; 
 sett.labels.use_initgmm = true;
