@@ -1,7 +1,7 @@
 clear;
 
-DO_BRAINWEB = 0; % 0: not, 1: 2D, 2: 3D
-DO_RIRE     = true;
+DO_BRAINWEB = 2; % 0: not, 1: 2D, 2: 3D
+DO_RIRE     = false;
 
 if DO_BRAINWEB
     % Simulated data
@@ -12,8 +12,8 @@ if DO_BRAINWEB
     for i=1:10
         % Simulate some misaligned BrainWeb images (T1, T2, PD)        
         [Nii3d,Nii2d] = Simulate('DirRef',DirData, ...
-                                 'Random',[true true true, ... % do_sim, add_bias, misalign
-                                          true true true]);   % thick_slice, crop_fov, add_noise
+                                 'Random',[true true false, ... % do_sim, add_bias, misalign
+                                          false false false]);   % thick_slice, crop_fov, add_noise
     
         % Do registration             
         tic

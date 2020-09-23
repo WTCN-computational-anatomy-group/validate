@@ -333,23 +333,26 @@ end
 %------------------
 if model_num == 8, fprintf('=============\nMODEL %i\n=============\n\n',model_num);
 % Define training population
-ix_pop = [ix.CROMISPETTERI ix.ATLAS];
+ix_pop = [ix.CROMISPETTERI ix.ATLAS ix.MICCAI2012];
 N      = Inf*ones(1,numel(ix_pop)); % Set maximum number of subjects
 N      = min(N,numsubj);
 
 % Number of template classes
 K = 7; K1 = K + 1;
  
-ibrain = 1:3;
-iven = ibrain(end) + 1;
-iles = ibrain(end) + 2;
-ibn = ibrain(end) + 3;
-irest = ibrain(end) + 4;
-ibg = ibrain(end) + 5;     
-cm_map = {{ibg, ibn, iven, iles, [ibrain ibn], [iven ibrain], irest, ...
-           setdiff(1:K1,[ibrain, iven, iles])}, ...
-           {iles, setdiff(1:K1,iles)}};
-
+igm = 5;
+iwm = 4;
+isin = 6;
+iven = 3;
+iles = 7;
+ibn = K1;
+irest = 2;
+ibg = 1;   
+cm_map = {{ibg, ibn, iven, iles, [igm iwm isin], [iven igm iwm isin], irest, ...
+           [ibg igm iwm isin iven ibn]}, ...
+           {iles, setdiff(1:K1,iles)}, ...
+           {igm,igm,[igm iwm],iwm,iven,iven,[iven ibn irest ibg isin]}}; % 1.cgm,2.sgm,3.spn,4.wm,5,csf,6.ven  };
+       
 P1 = P(ix_pop);
 for p=1:numel(P1)
     P1{p}{3} = N(p); 
@@ -360,6 +363,7 @@ end
 % Settings
 sett                    = struct;
 if showfig, sett.show.figs = {'model','segmentations','intensity'}; end
+sett.show.mx_subjects   = 6;
 sett.gen.num_workers    = nw;
 sett.write.dir_res      = fullfile(dir_res,['results/model-' num2str(model_num)]);
 if ~run3d, sett.write.dir_res = [sett.write.dir_res '-2D-' ax2d]; end
@@ -368,15 +372,16 @@ sett.write.mu           = [true true];
 sett.write.tc           = [false false false];  % native, warped, warped-mod
 sett.model.K            = K;  
 sett.nit.zm             = 4;
-sett.model.mg_ix        = [1 2 3 4 5 6 7 7 8 8 8];
-sett.model.vx           = 1;
+sett.nit.init_mu        = 5;
+sett.model.mg_ix        = [1 1 1 2 2 2 3 4 5 6 7 8];
+sett.model.vx           = 1.5;
 sett.labels.use         = true; 
-sett.labels.use_initgmm = true;
-sett.var.v_settings     = [0 0 0.2 0.05 0.2]*4;
-sett.nit.init           = 64;
+sett.labels.use_initgmm = false;
+sett.var.v_settings     = [0 0 0.2 0.05 0.2]*8;
+sett.nit.init           = 32;
 sett.model.init_mu_dm   = 16;
 sett.do.updt_bf         = true;
-sett.labels.w           = 0.9999;
+sett.labels.w           = 0.99;
 sett.model.crop_mu      = false;
 sett.gen.init_with_ct   = true;
 if exist(sett.write.dir_res,'dir') == 7, rmdir(sett.write.dir_res,'s'); end % clear results directory
